@@ -17,6 +17,9 @@
     "documentation": "https://jealg.github.io/documentation/plugin-horoscope/#language#/",
     "changelog_beta" : "https://jealg.github.io/documentation/plugin-horoscope/#language#/changelog_beta",
  	"documentation_beta" : "https://jealg.github.io/documentation/plugin-horoscope/#language#/",
+     "link" : {
+		"forum":"https://community.jeedom.com/tag/plugin-horoscope"
+	},
      "compatibility": [
 		"miniplus",
 		"smart",
