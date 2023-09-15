@@ -46,3 +46,12 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .vscode/settings.json
+
+nbproject/
+test.php
+core/config/common.config.php
+plugins
+.remote-sync.json
+.project
+.DS_Store
+.vscode
