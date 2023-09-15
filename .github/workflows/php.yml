@@ -19,5 +19,3 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: michaelw90/PHP-Lint@master
-
-      
