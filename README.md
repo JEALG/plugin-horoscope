@@ -14,4 +14,8 @@ La phrase sera ensuite générée via le biais d'un site internet sur l'astrolog
 Validation Code int (branche BETA):
 
 ![PHP](https://github.com/JEALG/plugin-horoscope/actions/workflows/php.yml/badge.svg?branch=beta)
-![PHP](https://github.com/jJEALG/plugin-horoscope/actions/workflows/codeLintGlobal.yml/badge.svg?branch=beta)
+![PHP](https://github.com/JEALG/plugin-horoscope/actions/workflows/codeLintGlobal.yml/badge.svg?branch=beta)
+
+Validation PHP Version (branche BETA) :
+
+![PHP 7.3](https://github.com/JEALG/plugin-horoscope/actions/workflows/lint_Php73.yml/badge.svg?branch=beta)
