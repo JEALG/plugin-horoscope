@@ -65,7 +65,6 @@ class horoscope extends eqLogic
             } else {
                 $paragraphe = strip_tags($paragraphe);
                 $matches = [];
-                log::add('horoscope', 'debug', ' ─────────> Signe ==> ' . $horoscope['name']);
                 if (preg_match('/^Horoscope\s*[^ ]+\s*-\s*(.*)\n(.*)/', $paragraphe, $matches) > 0) {
                     if (count($matches) == 3) {
                         $theme = $matches[1];
