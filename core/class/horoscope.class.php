@@ -65,6 +65,7 @@ class horoscope extends eqLogic
             } else {
                 $paragraphe = strip_tags($paragraphe);
                 $matches = [];
+                log::add('horoscope', 'debug', ' ─────────> Signe ==> ' . $horoscope['name']);
                 if (preg_match('/^Horoscope\s*[^ ]+\s*-\s*(.*)\n(.*)/', $paragraphe, $matches) > 0) {
                     if (count($matches) == 3) {
                         $theme = $matches[1];
@@ -217,6 +218,34 @@ class horoscope extends eqLogic
     }
 
     /* Recuperer l'horoscope du jour et met à jour les commandes */
+    public function getHoroscopeName($theme_name)
+    {
+        switch ($theme_name) {
+            case 'Amour':
+                $theme_name_cmd =  (__('Amour', __FILE__));
+            case 'Argent':
+                $theme_name_cmd =  (__('Argent', __FILE__));
+            case 'signe':
+                $theme_name_cmd =  (__('signe', __FILE__));
+            case 'Santé':
+                $theme_name_cmd =  (__('Santé', __FILE__));
+            case "Travail":
+                $theme_name_cmd =  (__('Travail', __FILE__));
+            case "Famille":
+                $theme_name_cmd =  (__('Famille', __FILE__));
+            case "Viesociale":
+                $theme_name_cmd =  (__('Vie Sociale', __FILE__));
+            case "Citationdujour":
+                $theme_name_cmd =  (__('Citation du jour', __FILE__));
+            case "Nombredechance":
+                $theme_name_cmd =  (__('Nombre de chance', __FILE__));
+            case "Clindoeil":
+                $theme_name_cmd =  (__('Clin d oeil', __FILE__));
+            default:
+                $theme_name_cmd = $theme_name;
+        }
+        return $theme_name_cmd;
+    }
     public function getupdateHoroscope($signe_zodiaque, $order)
     {
 
@@ -228,16 +257,24 @@ class horoscope extends eqLogic
                 continue;
             }
             log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> {$message}");
+            // Récupération de la traduction de la commande
+            $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
+            // Sous type de commande suivant type
+            if ($theme_name_cmd == 'Nombredechance') {
+                $SubType = 'numeric';
+            } else {
+                $SubType = 'string';
+            }
 
             $horoscopeCmd = $this->getCmd(null, $theme_name);
             if (!is_object($horoscopeCmd)) {
                 $horoscopeCmd = new horoscopeCmd();
-                $horoscopeCmd->setName(__($theme_name, __FILE__));
+                $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
                 $horoscopeCmd->setEqLogic_id($this->id);
                 $horoscopeCmd->setLogicalId($theme_name);
                 $horoscopeCmd->setConfiguration('data', $theme_name);
                 $horoscopeCmd->setType('info');
-                $horoscopeCmd->setSubType('string');
+                $horoscopeCmd->setSubType($SubType);
                 $horoscopeCmd->setIsHistorized(0);
                 $horoscopeCmd->setIsVisible(0);
                 $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
@@ -245,7 +282,7 @@ class horoscope extends eqLogic
                 $order++;
                 $horoscopeCmd->save();
 
-                log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name);
+                log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
             }
             $this->checkAndUpdateCmd($theme_name, $message);
         }
@@ -254,11 +291,19 @@ class horoscope extends eqLogic
             // si un mapping specifique est defini alors on l'applique
             if (isset(self::$_theme_mapping[$theme_name])) {
                 $specific_commande_name = self::$_theme_mapping[$theme_name];
+                // Récupération de la traduction de la commande
+                $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
+                // Sous type de commande suivant type
+                if ($theme_name_cmd == 'Nombredechance') {
+                    $SubType = 'numeric';
+                } else {
+                    $SubType = 'string';
+                }
 
                 $horoscopeCmd = $this->getCmd(null, $specific_commande_name);
                 if (!is_object($horoscopeCmd)) {
                     $horoscopeCmd = new horoscopeCmd();
-                    $horoscopeCmd->setName(__($theme_name, __FILE__));
+                    $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
                     $horoscopeCmd->setEqLogic_id($this->id);
                     $horoscopeCmd->setLogicalId($specific_commande_name);
                     $horoscopeCmd->setConfiguration('data', $specific_commande_name);
@@ -271,7 +316,7 @@ class horoscope extends eqLogic
                     $order++;
                     $horoscopeCmd->save();
 
-                    log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name);
+                    log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
                 }
                 $this->checkAndUpdateCmd($specific_commande_name, $message);
             }
@@ -330,7 +375,7 @@ class horoscope extends eqLogic
         /*  ********************** Récupération signe *************************** */
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
-            throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
+            throw new Exception(__('Le champ SIGNE DU ZODIAQUE ne peut être vide', __FILE__));
             log::add('horoscope', 'error', '│ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe_zodiaque'));
         }
         log::add('horoscope', 'debug', '│ Signe du zodiaque : ' . $signe_zodiaque);

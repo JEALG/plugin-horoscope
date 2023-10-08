@@ -18,7 +18,8 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function horoscope_install() {
+function horoscope_install()
+{
     jeedom::getApiKey('horoscope');
 
     $cron = cron::byClassAndFunction('horoscope', 'pull');
@@ -27,10 +28,10 @@ function horoscope_install() {
     }
 
     config::save('functionality::cron::enable', 1, 'horoscope');
-
 }
 
-function horoscope_update() {
+function horoscope_update()
+{
     jeedom::getApiKey('horoscope');
 
     $cron = cron::byClassAndFunction('horoscope', 'pull');
@@ -39,47 +40,41 @@ function horoscope_update() {
     }
 
     config::save('functionality::cron::enable', 1, 'horoscope');
-    
-    // Fonction pour renommer les commandes à activer si besoin
-    /*$plugin = plugin::byId('horoscope');
+
+    log::add('horoscope', 'debug', '│ Etape 1/2 : Update(s) nouveautée(s)');
+
+    $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
-    foreach ($eqLogics as $eqLogic){
-        //updateLogicalId($eqLogic, 'message_givre', 'td');
-
+    foreach ($eqLogics as $eqLogic) {
+        updateLogicalId($eqLogic, 'Nombredechance', null, 'numeric');
     }
 
-    //resave eqLogics for new cmd:
-    try
-    {
-        $eqs = eqLogic::byType('horoscope');
-        foreach ($eqs as $eq)
-        {
-            $eq->save();
-        }
-    }
-    catch (Exception $e)
-    {
-        $e = print_r($e, 1);
-        log::add('horoscope', 'error', 'horoscope_update ERROR: '.$e);
-    } */
-
-
+    log::add('horoscope', 'debug', '│ Etape 2/2 : Mise à jour des équipements');
     //message::add('Plugin Horoscope', 'Merci pour la mise à jour de ce plugin, consultez le changelog.');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
     }
 }
 
-function updateLogicalId($eqLogic, $from, $to) {
+function updateLogicalId($eqLogic, $from, $to = null, $SubType = null)
+{
     //  Fonction pour renommer une commande
-    $horoscopeCmd = $eqLogic->getCmd(null, $from);
-    if (is_object($horoscopeCmd)) {
-        $horoscopeCmd->setLogicalId($to);
-        $horoscopeCmd->save();
+    $cmd = $eqLogic->getCmd(null, $from);
+    if (is_object($cmd)) {
+        //changement equipement
+        if ($to != null) {
+            $cmd->setLogicalId($to);
+        }
+        //Update sous type
+        if ($SubType != null) {
+            $cmd->setSubType($SubType);
+        }
+        $cmd->save();
     }
 }
 
-function horoscope_remove() {
+function horoscope_remove()
+{
     $cron = cron::byClassAndFunction('horoscope', 'pull');
     if (is_object($cron)) {
         $cron->remove();
