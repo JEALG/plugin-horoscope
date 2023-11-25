@@ -28,28 +28,148 @@ class horoscope extends eqLogic
 
     /* Le gabarit de l'URL de récupération de l'horoscope - La chaine '%s' sera remplacée par la clé du signe de l'equipement */
 
-    public static $_url_template = 'http://www.asiaflash.com/horoscope/rss_horojour_%s.xml';
+    public static $_url_template = 'http://www.asiaflash.com/horoscope/%s.xml';
 
     /*     * *************************Attributs****************************** */
 
     /*     * ***********************Methode static*************************** */
     public static function deadCmd()
     {
-        return array();
+        $return = array();
+        foreach (eqLogic::byType('horoscope') as $horoscope) {
+            foreach ($horoscope->getCmd() as $cmd) {
+                preg_match_all("/#([0-9]*)#/", $cmd->getConfiguration('infoName', ''), $matches);
+                foreach ($matches[1] as $cmd_id) {
+                    if (!cmd::byId(str_replace('#', '', $cmd_id))) {
+                        $return[] = array('detail' => __('Horoscope', __FILE__) . ' ' . $horoscope->getHumanName() . ' ' . __('dans la commande', __FILE__) . ' ' . $cmd->getName(), 'help' => __('Nom Information', __FILE__), 'who' => '#' . $cmd_id . '#');
+                    }
+                }
+                preg_match_all("/#([0-9]*)#/", $cmd->getConfiguration('calcul', ''), $matches);
+                foreach ($matches[1] as $cmd_id) {
+                    if (!cmd::byId(str_replace('#', '', $cmd_id))) {
+                        $return[] = array('detail' => __('Horosocope', __FILE__) . ' ' . $horoscope->getHumanName() . ' ' . __('dans la commande', __FILE__) . ' ' . $cmd->getName(), 'help' => __('Calcul', __FILE__), 'who' => '#' . $cmd_id . '#');
+                    }
+                }
+            }
+        }
+        return $return;
     }
+    //Fonction Widget
     public static $_widgetPossibility = array('custom' => true);
 
-    public static function getHoroscopeForSigne($signe_zodiaque)
+    public function AddCommand_N($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null)
+    {
+        $Cmd = $this->getCmd(null, $_logicalId);
+        if (!is_object($Cmd)) {
+            log::add(__CLASS__, 'debug', '│ Name : ' . $Name . ' -- Type : ' . $Type . ' -- LogicalID : ' . $_logicalId . ' -- Template Widget / Ligne : ' . $Template . '/' . $forceLineB . '-- Type de générique : ' . $generic_type . ' -- Icône : ' . $icon . '/' .  ' -- Ordre : ' . $_order);
+            $Cmd = new horoscopeCmd();
+            $Cmd->setId(null);
+            $Cmd->setLogicalId($_logicalId);
+            $Cmd->setEqLogic_id($this->getId());
+            $Cmd->setName($Name);
+
+            $Cmd->setType($Type);
+            $Cmd->setSubType($SubType);
+
+            if ($Template != null) {
+                $Cmd->setTemplate('dashboard', $Template);
+                $Cmd->setTemplate('mobile', $Template);
+            }
+
+            $Cmd->setIsVisible($IsVisible);
+
+            if ($icon != 'default') {
+                $Cmd->setdisplay('icon', '<i class="' . $icon . '"></i>');
+            }
+            if ($forceLineB != 'default') {
+                $Cmd->setdisplay('forceReturnLineBefore', 1);
+            }
+            if ($_iconname != 'default') {
+                $Cmd->setdisplay('showIconAndNamedashboard', 1);
+            }
+            if ($_noiconname != null) {
+                $Cmd->setdisplay('showNameOndashboard', 0);
+            }
+
+            if ($generic_type != null) {
+                $Cmd->setGeneric_type($generic_type);
+            }
+            if ($_logicalId == 'signe') {
+                $Cmd->setConfiguration('data', 'signe');
+            }
+            if ($_order != null) {
+                $Cmd->setOrder($_order);
+            }
+            $Cmd->save();
+        }
+
+        /*     * ********************* Commande REFRESH ************************* */
+        $createRefreshCmd = true;
+        $refresh = $this->getCmd(null, 'refresh');
+        if (!is_object($refresh)) {
+            $refresh = cmd::byEqLogicIdCmdName($this->getId(), __('Rafraichir', __FILE__));
+            if (is_object($refresh)) {
+                $createRefreshCmd = false;
+            }
+        }
+        if ($createRefreshCmd) {
+            if (!is_object($refresh)) {
+                $refresh = new horoscopeCmd();
+                $refresh->setLogicalId('refresh');
+                $refresh->setIsVisible(1);
+                $refresh->setName(__('Rafraichir', __FILE__));
+            }
+            $refresh->setType('action');
+            $refresh->setSubType('other');
+            $refresh->setEqLogic_id($this->getId());
+            $refresh->save();
+        }
+        return $Cmd;
+    }
+
+    function templateWidget()
+    {
+        $return = array('info' => array('string' => array()));
+        $return['info']['string']['Signe zodiaque'] = array(
+            'template' => 'tmplmultistate',
+            'replace' => array('#_desktop_width_#' => '60'),
+            'test' => array(
+                array('operation' => "#value# == 'balance'", 'state_light' => '<img src=plugins/horoscope/core/template/img/balance.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/balance_dark.png>'),
+                array('operation' => "#value# == 'belier'", 'state_light' => '<img src=plugins/horoscope/core/template/img/belier.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/belier_dark.png>'),
+                array('operation' => "#value# == 'cancer'", 'state_light' => '<img src=plugins/horoscope/core/template/img/cancer.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/cancer_dark.png>'),
+                array('operation' => "#value# == 'capricorne'", 'state_light' => '<img src=plugins/horoscope/core/template/img/capricorne.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/capricorne_dark.png>'),
+                array('operation' => "#value# == 'gemeaux'", 'state_light' => '<img src=plugins/horoscope/core/template/img/gemeaux.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/gemeaux_dark.png>'),
+                array('operation' => "#value# == 'lion'", 'state_light' => '<img src=plugins/horoscope/core/template/img/lion.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/lion_dark.png>'),
+                array('operation' => "#value# == 'poissons'", 'state_light' => '<img src=plugins/horoscope/core/template/img/poissons.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/poissons_dark.png>'),
+                array('operation' => "#value# == 'sagittaire'", 'state_light' => '<img src=plugins/horoscope/core/template/img/sagittaire.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/sagittaire_dark.png>'),
+                array('operation' => "#value# == 'scorpion'", 'state_light' => '<img src=plugins/horoscope/core/template/img/scorpion.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/scorpion_dark.png>'),
+                array('operation' => "#value# == 'taureau'", 'state_light' => '<img src=plugins/horoscope/core/template/img/taureau.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/taureau_dark.png>'),
+                array('operation' => "#value# == 'vierge'", 'state_light' => '<img src=plugins/horoscope/core/template/img/vierge.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/vierge_dark.png>'),
+                array('operation' => "#value# == 'verseau'", 'state_light' => '<img src=plugins/horoscope/core/template/img/verseau.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/verseau_dark.png>')
+            )
+        );
+        return $return;
+    }
+
+    public static function getHoroscopeForSigne($signe_zodiaque, $type_horsocope)
     {
 
-        log::add('horoscope', 'debug', '│ Mise à jour pour le signe : ' . $signe_zodiaque);
+        if ($type_horsocope == 'traditionnel' || $type_horsocope == 'traditionnel_condense') {
+            $signe_zodiaque = 'rss_horojour_' . $signe_zodiaque;
+        } elseif ($type_horsocope == 'traditionnel_hebdomadaire') {
+            $signe_zodiaque = 'rss_hebdotay_complet_' . $signe_zodiaque;
+        }
 
         $url = sprintf(self::$_url_template, $signe_zodiaque);
+        log::add('horoscope', 'debug', '│ Info : URL ==> ' . $url);
         $xmlData = file_get_contents($url);
         $xml = new SimpleXMLElement($xmlData);
 
         // contient tous le champ description
         $description = $xml->channel->item->description;
+        $title = $xml->channel->item->title;
+        log::add('horoscope', 'debug', '│ Date ==> ' . $title);
+        log::add('horoscope', 'debug', '│ Description ==> ' . $description);
 
         // extrait les paragraphes de la description
         $paragraphes = preg_split('/<br><br>/', $description);
@@ -88,6 +208,7 @@ class horoscope extends eqLogic
         return $horoscope;
     }
 
+    //Fonction exécutée automatiquement
     public static function cron()
     {
         foreach (eqLogic::byType('horoscope', true) as $eqLogic) {
@@ -105,36 +226,15 @@ class horoscope extends eqLogic
         }
     }
 
-    function templateWidget()
-    {
-        $return = array('info' => array('string' => array()));
-        $return['info']['string']['Signe zodiaque'] = array(
-            'template' => 'tmplmultistate',
-            'replace' => array('#_desktop_width_#' => '60'),
-            'test' => array(
-                array('operation' => "#value# == 'balance'", 'state_light' => '<img src=plugins/horoscope/core/template/img/balance.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/balance_dark.png>'),
-                array('operation' => "#value# == 'belier'", 'state_light' => '<img src=plugins/horoscope/core/template/img/belier.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/belier_dark.png>'),
-                array('operation' => "#value# == 'cancer'", 'state_light' => '<img src=plugins/horoscope/core/template/img/cancer.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/cancer_dark.png>'),
-                array('operation' => "#value# == 'capricorne'", 'state_light' => '<img src=plugins/horoscope/core/template/img/capricorne.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/capricorne_dark.png>'),
-                array('operation' => "#value# == 'gemeaux'", 'state_light' => '<img src=plugins/horoscope/core/template/img/gemeaux.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/gemeaux_dark.png>'),
-                array('operation' => "#value# == 'lion'", 'state_light' => '<img src=plugins/horoscope/core/template/img/lion.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/lion_dark.png>'),
-                array('operation' => "#value# == 'poissons'", 'state_light' => '<img src=plugins/horoscope/core/template/img/poissons.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/poissons_dark.png>'),
-                array('operation' => "#value# == 'sagittaire'", 'state_light' => '<img src=plugins/horoscope/core/template/img/sagittaire.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/sagittaire_dark.png>'),
-                array('operation' => "#value# == 'scorpion'", 'state_light' => '<img src=plugins/horoscope/core/template/img/scorpion.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/scorpion_dark.png>'),
-                array('operation' => "#value# == 'taureau'", 'state_light' => '<img src=plugins/horoscope/core/template/img/taureau.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/taureau_dark.png>'),
-                array('operation' => "#value# == 'vierge'", 'state_light' => '<img src=plugins/horoscope/core/template/img/vierge.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/vierge_dark.png>'),
-                array('operation' => "#value# == 'verseau'", 'state_light' => '<img src=plugins/horoscope/core/template/img/verseau.png>', 'state_dark' => '<img src=plugins/horoscope/core/template/img/verseau_dark.png>')
-            )
-        );
-        return $return;
-    }
-
     /*     * *********************Méthodes d'instance************************* */
 
     public function preInsert()
     {
         if ($this->getConfiguration('autorefresh') == '') {
             $this->setConfiguration('autorefresh', '0 5 * * *');
+        }
+        if ($this->getConfiguration('type_horoscope') == '') {
+            $this->setConfiguration('type_horoscope', 'traditionnel');
         }
     }
 
@@ -149,34 +249,19 @@ class horoscope extends eqLogic
     public function postSave()
     {
         $_eqName = $this->getName();
+        $Equipement = eqlogic::byId($this->getId());
         log::add('horoscope', 'debug', 'postSave() => ' . $_eqName);
+
+        /*  ********************** Creéation des commandes signe *************************** */
+        log::add('horoscope', 'debug', '┌───────── Création commande si besoin pour : ' . $_eqName);
+        //$horo_ID = $this->getConfiguration('signe');
+        $horo_ID = 'signe';
+        $horo_Name = (__('signe', __FILE__));
+        $horo_Template = 'horoscope::Signe zodiaque';
         $order = 1;
+        $Equipement->AddCommand_N($horo_Name, $horo_ID, 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null);
 
-        $signe_zodiaque = $this->getConfiguration('signe');
-
-        $this->getupdateSigne($signe_zodiaque, $order);
-
-        //Fonction rafraichir
-        $createRefreshCmd = true;
-        $refresh = $this->getCmd(null, 'refresh');
-        if (!is_object($refresh)) {
-            $refresh = cmd::byEqLogicIdCmdName($this->getId(), __('Rafraichir', __FILE__));
-            if (is_object($refresh)) {
-                $createRefreshCmd = false;
-            }
-        }
-        if ($createRefreshCmd) {
-            if (!is_object($refresh)) {
-                $refresh = new horoscopeCmd();
-                $refresh->setLogicalId('refresh');
-                $refresh->setIsVisible(1);
-                $refresh->setName(__('Rafraichir', __FILE__));
-            }
-            $refresh->setType('action');
-            $refresh->setSubType('other');
-            $refresh->setEqLogic_id($this->getId());
-            $refresh->save();
-        }
+        log::add('horoscope', 'debug', '└─────────');
     }
 
     public function preUpdate()
@@ -189,6 +274,11 @@ class horoscope extends eqLogic
         if ($signe_zodiaque == '') {
             throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
             log::add('horoscope', 'error', '│ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe'));
+        }
+        /*  ********************** Du type d'horoscope signe *************************** */
+        $type_horsocope = $this->getConfiguration('type_horoscope');
+        if ($this->getConfiguration('type_horoscope') == '') {
+            $this->setConfiguration('type_horoscope', 'traditionnel');
         }
     }
 
@@ -215,6 +305,23 @@ class horoscope extends eqLogic
         }
         return 'plugins/horoscope/plugin_info/horoscope_icon.png';
     }
+    public function getHoroscopeCreateCMD($theme_name, $type_horsocope)
+    {
+        switch ($type_horsocope) {
+            case 'traditionnel_condense':
+                if ($theme_name === 'Amour' || $theme_name === 'Travail') {
+                    $create_cmd = true;
+                    //log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> CREATION");
+                } else {
+                    $create_cmd = false;
+                    //log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> PAS DE CREATION");
+                }
+                break;
+            default:
+                $create_cmd = true;
+        }
+        return $create_cmd;
+    }
 
     /* Recuperer l'horoscope du jour et met à jour les commandes */
     public function getHoroscopeName($theme_name)
@@ -222,134 +329,126 @@ class horoscope extends eqLogic
         switch ($theme_name) {
             case 'Amour':
                 $theme_name_cmd =  (__('Amour', __FILE__));
+                break;
             case 'Argent':
                 $theme_name_cmd =  (__('Argent', __FILE__));
+                break;
             case 'signe':
                 $theme_name_cmd =  (__('signe', __FILE__));
+                break;
             case 'Santé':
                 $theme_name_cmd =  (__('Santé', __FILE__));
+                break;
             case "Travail":
                 $theme_name_cmd =  (__('Travail', __FILE__));
+                break;
             case "Famille":
                 $theme_name_cmd =  (__('Famille', __FILE__));
+                break;
             case "Viesociale":
                 $theme_name_cmd =  (__('Vie Sociale', __FILE__));
+                break;
             case "Citationdujour":
                 $theme_name_cmd =  (__('Citation du jour', __FILE__));
+                break;
             case "Nombredechance":
                 $theme_name_cmd =  (__('Nombre de chance', __FILE__));
+                break;
             case "Clindoeil":
                 $theme_name_cmd =  (__('Clin d oeil', __FILE__));
+                break;
             default:
                 $theme_name_cmd = $theme_name;
         }
         return $theme_name_cmd;
     }
-    public function getupdateHoroscope($signe_zodiaque, $order)
+    public function AddCommand($theme_name, $horoscopeCmd, $theme_name_cmd, $order, $message)
     {
+        // Récupération de la traduction de la commande
+        $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
+        // Sous type de commande suivant type
+        if ($theme_name_cmd == 'Nombredechance') {
+            $SubType = 'numeric';
+            log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> " . $SubType);
+        } else {
+            $SubType = 'string';
+        }
 
-        $horoscope = self::getHoroscopeForSigne($signe_zodiaque);
+        // Création des commandes
+        $horoscopeCmd = $this->getCmd(null, $theme_name);
+        if (!is_object($horoscopeCmd)) {
+            $horoscopeCmd = new horoscopeCmd();
+            $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
+            $horoscopeCmd->setEqLogic_id($this->id);
+            $horoscopeCmd->setLogicalId($theme_name);
+            $horoscopeCmd->setConfiguration('data', $theme_name);
+            $horoscopeCmd->setType('info');
+            $horoscopeCmd->setSubType($SubType);
+            $horoscopeCmd->setIsHistorized(0);
+            $horoscopeCmd->setIsVisible(0);
+            $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
+            $horoscopeCmd->setOrder($order);
+            $horoscopeCmd->save();
+
+            log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
+        }
+        $this->checkAndUpdateCmd($theme_name, $message);
+    }
+    public function getupdateHoroscope($signe_zodiaque, $order, $type_horsocope)
+    {
+        $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope);
 
         // met a jour toutes les commandes contenants les phrases de l'horoscope
         foreach ($horoscope['themes'] as $theme_name => $message) {
             if (!is_string($message)) {
                 continue;
             }
-            log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> {$message}");
             // Récupération de la traduction de la commande
             $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
-            // Sous type de commande suivant type
-            if ($theme_name_cmd == 'Nombredechance') {
-                $SubType = 'numeric';
-            } else {
-                $SubType = 'string';
-            }
 
-            $horoscopeCmd = $this->getCmd(null, $theme_name);
-            if (!is_object($horoscopeCmd)) {
-                $horoscopeCmd = new horoscopeCmd();
-                $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
-                $horoscopeCmd->setEqLogic_id($this->id);
-                $horoscopeCmd->setLogicalId($theme_name);
-                $horoscopeCmd->setConfiguration('data', $theme_name);
-                $horoscopeCmd->setType('info');
-                $horoscopeCmd->setSubType($SubType);
-                $horoscopeCmd->setIsHistorized(0);
-                $horoscopeCmd->setIsVisible(0);
-                $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
-                $horoscopeCmd->setOrder($order);
+            // Vérification s'il faut créer la commande
+            $create_cmd = horoscope::getHoroscopeCreateCMD($theme_name, $type_horsocope);
+
+            if ($create_cmd === true) {
+                log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> {$message}");
+                // Création de la commande
+                $horoscopeCmd = $this->getCmd(null, $theme_name);
+                horoscope::AddCommand($theme_name, $horoscopeCmd, $theme_name_cmd, $order, $message);
                 $order++;
-                $horoscopeCmd->save();
-
-                log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
+            } else {
+                log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> PAS DE CREATION DE LA COMMANDE/UPDATE");
             }
-            $this->checkAndUpdateCmd($theme_name, $message);
         }
         // Mise à jour les commandes specifique declarée dans le tableau de mapping
+
         foreach ($horoscope['themes_simple'] as $theme_name => $message) {
             // si un mapping specifique est defini alors on l'applique
             if (isset(self::$_theme_mapping[$theme_name])) {
                 $specific_commande_name = self::$_theme_mapping[$theme_name];
+
                 // Récupération de la traduction de la commande
                 $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
-                // Sous type de commande suivant type
-                if ($theme_name_cmd == 'Nombredechance') {
-                    $SubType = 'numeric';
-                } else {
-                    $SubType = 'string';
-                }
 
-                $horoscopeCmd = $this->getCmd(null, $specific_commande_name);
-                if (!is_object($horoscopeCmd)) {
-                    $horoscopeCmd = new horoscopeCmd();
-                    $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
-                    $horoscopeCmd->setEqLogic_id($this->id);
-                    $horoscopeCmd->setLogicalId($specific_commande_name);
-                    $horoscopeCmd->setConfiguration('data', $specific_commande_name);
-                    $horoscopeCmd->setType('info');
-                    $horoscopeCmd->setSubType('string');
-                    $horoscopeCmd->setIsHistorized(0);
-                    $horoscopeCmd->setIsVisible(0);
-                    $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
-                    $horoscopeCmd->setOrder($order);
+                // Vérification s'il faut créer la commande
+                $create_cmd = horoscope::getHoroscopeCreateCMD($theme_name, $type_horsocope);
+
+                if ($create_cmd === true) {
+                    log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> {$message}");
+                    // Création de la commande
+                    $horoscopeCmd = $this->getCmd(null, $specific_commande_name);
+                    horoscope::AddCommand($theme_name, $horoscopeCmd, $specific_commande_name, $order, $message);
                     $order++;
-                    $horoscopeCmd->save();
-
-                    log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
+                } else {
+                    // log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> PAS DE CREATION DE LA COMMANDE/UPDATE");
                 }
-                $this->checkAndUpdateCmd($specific_commande_name, $message);
             }
         }
+
         return $order;
     }
 
-    public function getupdateSigne($signe_zodiaque, $order)
+    public function getupdateSigne($signe_zodiaque)
     {
-        $_eqName = $this->getName();
-
-        $horoscopeCmd = $this->getCmd(null, 'signe');
-        if (!is_object($horoscopeCmd)) {
-            $horoscopeCmd = new horoscopeCmd();
-            $horoscopeCmd->setName(__('signe', __FILE__));
-            $horoscopeCmd->setEqLogic_id($this->id);
-            $horoscopeCmd->setLogicalId('signe');
-            $horoscopeCmd->setConfiguration('data', 'signe');
-            $horoscopeCmd->setType('info');
-            $horoscopeCmd->setSubType('string');
-            $horoscopeCmd->setIsHistorized(0);
-            $horoscopeCmd->setIsVisible(1);
-            $horoscopeCmd->setTemplate('dashboard', 'horoscope::Signe zodiaque');
-            $horoscopeCmd->setTemplate('mobile', 'horoscope::Signe zodiaque');
-            $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
-            $horoscopeCmd->setOrder($order);
-            $order++;
-            $horoscopeCmd->save();
-
-            log::add('horoscope', 'debug', '┌───────── Création commande : ' . $_eqName);
-            log::add('horoscope', 'debug', '│ Nouvelle commande : Signe');
-            log::add('horoscope', 'debug', '└─────────');
-        }
-
         $cmd = $this->getCmd('info', 'signe'); //Mise à jour de la valeur
         if (is_object($cmd)) {
             $cmd->setConfiguration('value', $signe_zodiaque);
@@ -357,7 +456,8 @@ class horoscope extends eqLogic
             $cmd->event($signe_zodiaque);
         }
         $this->checkAndUpdateCmd('signe', $signe_zodiaque);
-        return $order;
+        log::add('horoscope', 'debug', '│ Mise à jour Signe ==> ' . $signe_zodiaque);
+        return;
     }
 
     /*     * **********************Getteur Setteur*************************** */
@@ -369,23 +469,31 @@ class horoscope extends eqLogic
 
         $_eqName = $this->getName();
         log::add('horoscope', 'debug', '┌───────── MISE A JOUR : ' . $_eqName);
-        $order = 1;
 
         /*  ********************** Récupération signe *************************** */
+        log::add('horoscope', 'debug', '│┌───────── PARAMETRAGE');
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
             throw new Exception(__('Le champ SIGNE DU ZODIAQUE ne peut être vide', __FILE__));
-            log::add('horoscope', 'error', '│ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe_zodiaque'));
+            log::add('horoscope', 'error', '││ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe_zodiaque'));
         }
-        log::add('horoscope', 'debug', '│ Signe du zodiaque : ' . $signe_zodiaque);
+        log::add('horoscope', 'debug', '││ Signe du zodiaque : ' . $signe_zodiaque);
+
+        /*  ********************** Du type d'horoscope signe *************************** */
+        if ($this->getConfiguration('type_horoscope') == '') {
+            $this->setConfiguration('type_horoscope', 'traditionnel');
+        }
+        $type_horsocope = $this->getConfiguration('type_horoscope');
+
+        log::add('horoscope', 'debug', '││ Type d\'horosocope  : ' . $type_horsocope);
+        log::add('horoscope', 'debug', '│└─────────');
 
         /* Création/Update Signe */
-        $this->getupdateSigne($signe_zodiaque, $order);
+        $this->getupdateSigne($signe_zodiaque);
         $order = 2;
 
         /* Création/Update Horoscope */
-        $this->getupdateHoroscope($signe_zodiaque, $order);
-
+        $this->getupdateHoroscope($signe_zodiaque, $order, $type_horsocope);
         log::add('horoscope', 'debug', '└─────────');
     }
     /*     * **********************Getteur Setteur*************************** */
@@ -400,7 +508,10 @@ class horoscopeCmd extends cmd
     /*     * *********************Methode d'instance************************* */
     public function dontRemoveCmd()
     {
-        return true;
+        if ($this->getLogicalId() == 'refresh') {
+            return true;
+        }
+        return false;
     }
     public function execute($_options = array())
     {

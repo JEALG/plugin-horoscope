@@ -169,6 +169,19 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-4 control-label">{{Type de Horoscope}}
+                                    <sup><i class="fas fa-question-circle" title="{{Choisir un type d'horsocope}}"></i></sup>
+                                </label>
+                                <div class="col-sm-6">
+                                    <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_horoscope">
+                                        <option value=''>{{Aucun}}</option>
+                                        <option value='traditionnel'>{{Traditionnel Quotidien}}</option>
+                                        <option value='traditionnel_condense'>{{Traditionnel Quotidien Condensé}}</option>
+                                        <!--<option value='traditionnel_hebdomadaire'>{{Traditionnel hebdomadaire}}</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Auto-actualisation}}
                                     <sup><i class="fas fa-question-circle" title="{{Fréquence de rafraîchissement des commandes infos de l'équipement}}"></i></sup>
                                 </label>
