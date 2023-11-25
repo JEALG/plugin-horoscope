@@ -367,7 +367,7 @@ class horoscope extends eqLogic
         // Récupération de la traduction de la commande
         $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
         // Sous type de commande suivant type
-        if ($theme_name_cmd == 'Nombredechance') {
+        if ($theme_name == 'Nombredechance') {
             $SubType = 'numeric';
             log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> " . $SubType);
         } else {
