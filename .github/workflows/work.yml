@@ -7,7 +7,6 @@ on:
       branches:
         - beta
         - stable
-        
   name : 'Full Workflows Plugin Jeedom'
   
   jobs:
