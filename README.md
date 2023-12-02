@@ -2,6 +2,14 @@
 
 # Jeedom - Horoscope
 
+
+Validation (branche BETA) :
+
+[![Test Plugin Jeedom](https://github.com/JEALG/plugin-horoscope/actions/workflows/work.yml/badge.svg?branch=beta)](https://github.com/JEALG/plugin-horoscope/actions/workflows/work.yml)
+
+---
+
+
 Plugin Horoscope pour Jeedom
 
 Ce plugin a pour but de pouvoir donner l'horoscope chaque jour via une petite phrase.
