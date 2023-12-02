@@ -10,4 +10,4 @@ on:
   
   jobs:
     plugin:
-      uses: jeedom/workflows/.github/workflows/plugin.yml@main
+      uses: https://github.com/jeedom/workflows/.github/workflows/plugin.yml@main
