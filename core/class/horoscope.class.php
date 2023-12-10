@@ -99,9 +99,12 @@ class horoscope extends eqLogic
         }
         return $theme_name_cmd;
     }
-    public function AddCommand_N($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO', $Equipement)
+    public function AddCommand($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO', $Equipement)
     {
         $Cmd = $this->getCmd(null, $_logicalId);
+        if ($SubType === 'numeric') {
+            $Template  = 'core::' . 'line';
+        }
         if (!is_object($Cmd)) {
             log::add(__CLASS__, 'debug', '│ Name : ' . $Name . ' -- Type/Sous type : ' . $Type . '/' . $SubType . ' -- LogicalID : ' . $_logicalId . ' -- Template Widget / Ligne : ' . $Template . '/' . $forceLineB . '-- Type de générique : ' . $generic_type . ' -- Icône : ' . $icon . '/' .  ' -- Ordre : ' . $_order);
             $Cmd = new horoscopeCmd();
@@ -117,7 +120,10 @@ class horoscope extends eqLogic
                 $Cmd->setTemplate('dashboard', $Template);
                 $Cmd->setTemplate('mobile', $Template);
             }
-
+            if ($SubType === 'numeric') {
+                $Cmd->setdisplay('forceReturnLineBefore', 1);
+                $Cmd->setdisplay('forceReturnLineAfter', 1);
+            }
             $Cmd->setIsVisible($IsVisible);
 
             if ($icon != 'default') {
@@ -199,7 +205,7 @@ class horoscope extends eqLogic
                 }
                 // Création de la commande
                 $horo_Template = 'GENERIC_INFO';
-                $Equipement->AddCommand_N($horo_Name_Trad, $horo_Name, 'info', $SubType, $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
+                $Equipement->AddCommand($horo_Name_Trad, $horo_Name, 'info', $SubType, $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
                 $order++;
             } else {
                 log::add('horoscope', 'debug', "│ Création Commande : {$horo_Name} ==> PAS DE CREATION DE LA COMMANDE/UPDATE");
@@ -229,7 +235,7 @@ class horoscope extends eqLogic
                     }
                     // Création de la commande
                     $horo_Template = 'GENERIC_INFO';
-                    $Equipement->AddCommand_N($horo_Name, $horo_ID, 'info', $SubType, 'default', null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
+                    $Equipement->AddCommand($horo_Name, $horo_ID, 'info', $SubType, 'default', null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
                     $order++;
                 }
             }
@@ -374,7 +380,7 @@ class horoscope extends eqLogic
         $horo_signe = $this->getConfiguration('signe');
         $horo_Template = 'horoscope::Signe zodiaque';
         $order = 1;
-        $Equipement->AddCommand_N($horo_Name, $horo_ID, 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
+        $Equipement->AddCommand($horo_Name, $horo_ID, 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
         log::add('horoscope', 'debug', '│ Type Horoscope : ' . $horo_type);
@@ -441,40 +447,6 @@ class horoscope extends eqLogic
                 $create_cmd = true;
         }
         return $create_cmd;
-    }
-
-
-    public function AddCommand($theme_name, $horoscopeCmd, $theme_name_cmd, $order, $message)
-    {
-        // Récupération de la traduction de la commande
-        $theme_name_cmd = horoscope::getHoroscopeName($theme_name);
-        // Sous type de commande suivant type
-        if ($theme_name == 'Nombredechance') {
-            $SubType = 'numeric';
-            log::add('horoscope', 'debug', "│ {$theme_name} : " . $SubType);
-        } else {
-            $SubType = 'string';
-        }
-
-        // Création des commandes
-        $horoscopeCmd = $this->getCmd(null, $theme_name);
-        if (!is_object($horoscopeCmd)) {
-            $horoscopeCmd = new horoscopeCmd();
-            $horoscopeCmd->setName(__($theme_name_cmd, __FILE__));
-            $horoscopeCmd->setEqLogic_id($this->id);
-            $horoscopeCmd->setLogicalId($theme_name);
-            $horoscopeCmd->setConfiguration('data', $theme_name);
-            $horoscopeCmd->setType('info');
-            $horoscopeCmd->setSubType($SubType);
-            $horoscopeCmd->setIsHistorized(0);
-            $horoscopeCmd->setIsVisible(0);
-            $horoscopeCmd->setDisplay('generic_type', 'GENERIC_INFO');
-            $horoscopeCmd->setOrder($order);
-            $horoscopeCmd->save();
-
-            log::add('horoscope', 'debug', '│ Création de la commande : ' . $theme_name_cmd);
-        }
-        $this->checkAndUpdateCmd($theme_name, $message);
     }
 
     /*     * **********************Getteur Setteur*************************** */
