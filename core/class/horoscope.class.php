@@ -389,6 +389,8 @@ class horoscope extends eqLogic
             horoscope::AddCommand_theme($horo_signe, $order, $horo_type, $Equipement);
         }
         log::add('horoscope', 'debug', '└─────────');
+        if (!$this->getIsEnable()) return;
+        $this->getInformations();
     }
 
     public function preUpdate()
@@ -410,6 +412,7 @@ class horoscope extends eqLogic
 
     public function postUpdate()
     {
+        if (!$this->getIsEnable()) return;
         $this->getInformations();
     }
 
@@ -491,7 +494,7 @@ class horoscope extends eqLogic
 
 
         $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope);
-        log::add('horoscope', 'debug', '│┌───────── MISE A JOUR DE L HOROSCOPE');
+        log::add('horoscope', 'debug', '│┌───────── MISE A JOUR DE L\'HOROSCOPE');
         foreach ($horoscope['themes'] as $theme_name => $message) {
             if (!is_string($message)) {
                 continue;
