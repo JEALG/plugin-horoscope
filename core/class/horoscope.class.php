@@ -502,7 +502,7 @@ class horoscope extends eqLogic
         }
         $type_horsocope = $this->getConfiguration('type_horoscope');
 
-        log::add('horoscope', 'debug', '││ Type d\'horosocope  : ' . $type_horsocope);
+        log::add('horoscope', 'debug', '││ Type d\'horosocope : ' . $type_horsocope);
         log::add('horoscope', 'debug', '│└─────────');
 
         /* Création/Update Signe */
@@ -514,7 +514,7 @@ class horoscope extends eqLogic
             $cmd->event($signe_zodiaque);
         }
         $this->checkAndUpdateCmd('signe', $signe_zodiaque);
-        log::add('horoscope', 'debug', '││ Mise à jour Signe ==> ' . $signe_zodiaque);
+        log::add('horoscope', 'debug', '││ Mise à jour Signe : ' . $signe_zodiaque);
         log::add('horoscope', 'debug', '│└─────────');
 
 
