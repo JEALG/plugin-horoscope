@@ -271,7 +271,7 @@ class horoscope extends eqLogic
         }
 
         $url = sprintf(self::$_url_template, $signe_zodiaque);
-        log::add('horoscope', 'debug', '│ Info : URL ==> ' . $url);
+        log::add('horoscope', 'debug', '│ URL : ' . $url);
         $xmlData = file_get_contents($url);
         $xml = new SimpleXMLElement($xmlData);
 
