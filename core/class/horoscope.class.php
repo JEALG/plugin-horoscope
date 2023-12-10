@@ -431,10 +431,10 @@ class horoscope extends eqLogic
             case 'traditionnel_condense':
                 if ($theme_name === 'Amour' || $theme_name === 'Travail') {
                     $create_cmd = true;
-                    //log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> CREATION");
+                    //log::add('horoscope', 'debug', "│ {$theme_name} : CREATION");
                 } else {
                     $create_cmd = false;
-                    //log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> PAS DE CREATION");
+                    //log::add('horoscope', 'debug', "│ {$theme_name} : PAS DE CREATION");
                 }
                 break;
             default:
@@ -451,7 +451,7 @@ class horoscope extends eqLogic
         // Sous type de commande suivant type
         if ($theme_name == 'Nombredechance') {
             $SubType = 'numeric';
-            log::add('horoscope', 'debug', "│ Info : {$theme_name} ==> " . $SubType);
+            log::add('horoscope', 'debug', "│ {$theme_name} : " . $SubType);
         } else {
             $SubType = 'string';
         }
@@ -524,7 +524,7 @@ class horoscope extends eqLogic
             if (!is_string($message)) {
                 continue;
             }
-            log::add('horoscope', 'debug', "││ Info : {$theme_name} ==> {$message}");
+            log::add('horoscope', 'debug', "││ {$theme_name} : {$message}");
             //if (is_object($theme_name)) {
             $this->checkAndUpdateCmd($theme_name, $message);
             //}
