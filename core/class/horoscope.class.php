@@ -278,8 +278,8 @@ class horoscope extends eqLogic
         // contient tous le champ description
         $description = $xml->channel->item->description;
         $title = $xml->channel->item->title;
-        log::add('horoscope', 'debug', '│ Date ==> ' . $title);
-        log::add('horoscope', 'debug', '│ Description ==> ' . $description);
+        log::add('horoscope', 'debug', '│ Date : ' . $title);
+        log::add('horoscope', 'debug', '│ Description : ' . $description);
 
         // extrait les paragraphes de la description
         $paragraphes = preg_split('/<br><br>/', $description);
