@@ -1,6 +1,6 @@
 <?php
 
-use SimpleXMLElement;
+//use SimpleXMLElement;
 
 /* This file is part of Jeedom.
  *
