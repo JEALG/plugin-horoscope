@@ -41,7 +41,7 @@ function horoscope_update()
 
     config::save('functionality::cron::enable', 1, 'horoscope');
 
-    log::add('horoscope', 'debug', '│ Etape 1/2 : Update(s) nouveautée(s)');
+    log::add('horoscope', 'debug', '│ Etape 1/3 : Update(s) nouveautée(s)');
 
     $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
@@ -49,7 +49,19 @@ function horoscope_update()
         updateLogicalId($eqLogic, 'Nombredechance', null, 'numeric');
     }
 
-    log::add('horoscope', 'debug', '│ Etape 2/2 : Mise à jour des équipements');
+    log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
+    //resave eqLogics for new cmd:
+    try {
+        $eqs = eqLogic::byType('horoscope');
+        foreach ($eqs as $eq) {
+            $eq->save();
+        }
+    } catch (Exception $e) {
+        $e = print_r($e, 1);
+        log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
+    }
+
+    log::add('horoscope', 'debug', '│ Etape 3/3 : Mise à jour des équipements');
     //message::add('Plugin Horoscope', 'Merci pour la mise à jour de ce plugin, consultez le changelog.');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
