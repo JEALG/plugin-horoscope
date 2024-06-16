@@ -277,15 +277,16 @@ class horoscope extends eqLogic
         }
 
         $url = sprintf(self::$_url_template, $signe_zodiaque);
-        log::add('horoscope', 'debug', '│ URL : ' . $url);
+        log::add('horoscope', 'debug', '│┌── :fg-info:Info requête' . ':/fg: ──');
+        log::add('horoscope', 'debug', '││ URL : ' . $url);
         $xmlData = file_get_contents($url);
         $xml = new SimpleXMLElement($xmlData);
 
         // contient tous le champ description
         $description = $xml->channel->item->description;
         $title = $xml->channel->item->title;
-        log::add('horoscope', 'debug', '│ Date : ' . $title);
-        log::add('horoscope', 'debug', '│ Description : ' . $description);
+        log::add('horoscope', 'debug', '││ Date : ' . $title);
+        log::add('horoscope', 'debug', '││ Description : ' . $description);
 
         // extrait les paragraphes de la description
         $paragraphes = preg_split('/<br><br>/', $description);
@@ -321,6 +322,7 @@ class horoscope extends eqLogic
                 }
             }
         }
+        log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
 
@@ -372,7 +374,7 @@ class horoscope extends eqLogic
         }
 
         /*  ********************** Creéation des commandes signe *************************** */
-        log::add('horoscope', 'debug', '┌───────── Création commande si besoin pour : ' . $_eqName);
+        log::add('horoscope', 'debug', '┌── :fg-success:Création de la commande si besoin pour : '  . $_eqName . ':/fg: ──');
         //$horo_ID = $this->getConfiguration('signe');
         $horo_ID = 'signe';
         $horo_Name = (__('signe', __FILE__));
@@ -383,8 +385,8 @@ class horoscope extends eqLogic
         $Equipement->AddCommand($horo_Name, $horo_ID, 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
-        log::add('horoscope', 'debug', '│ Type Horoscope : ' . $horo_type);
-        log::add('horoscope', 'debug', '│ Signe : ' .  $horo_signe);
+        log::add('horoscope', 'debug', '| ───▶︎ Type Horoscope : ' . $horo_type);
+        log::add('horoscope', 'debug', '| ───▶︎ Signe : ' .  $horo_signe);
         if ($this->getConfiguration('signe') != '') {
             horoscope::AddCommand_theme($horo_signe, $order, $horo_type, $Equipement);
         }
@@ -401,8 +403,8 @@ class horoscope extends eqLogic
         $signe_zodiaque = $this->getConfiguration('signe');
 
         if ($signe_zodiaque == '') {
-            throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
             log::add('horoscope', 'error', '│ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe'));
+            throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
         }
         /*  ********************** Du type d'horoscope signe *************************** */
         if ($this->getConfiguration('type_horoscope') == '') {
@@ -460,16 +462,16 @@ class horoscope extends eqLogic
         if (!$this->getIsEnable()) return;
 
         $_eqName = $this->getName();
-        log::add('horoscope', 'debug', '┌───────── MISE A JOUR : ' . $_eqName);
+        log::add('horoscope', 'debug', '┌── :fg-sucess:Mise à jour : '  . $_eqName . ':/fg: ──');
 
         /*  ********************** Récupération signe *************************** */
-        log::add('horoscope', 'debug', '│┌───────── PARAMETRAGE');
+        log::add('horoscope', 'debug', '│┌── :fg-success:Configuration de l\'équipement : '  . $_eqName . ':/fg: ──');
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
             throw new Exception(__('Le champ SIGNE DU ZODIAQUE ne peut être vide', __FILE__));
-            log::add('horoscope', 'error', '││ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe_zodiaque'));
+            log::add('horoscope', 'error', '││ ───▶︎ Configuration : Signe zodiaque inexistant : ' . $this->getConfiguration('signe_zodiaque'));
         }
-        log::add('horoscope', 'debug', '││ Signe du zodiaque : ' . $signe_zodiaque);
+        log::add('horoscope', 'debug', '││ ───▶︎ Signe du zodiaque : ' . $signe_zodiaque);
 
         /*  ********************** Du type d'horoscope signe *************************** */
         if ($this->getConfiguration('type_horoscope') == '') {
@@ -477,11 +479,11 @@ class horoscope extends eqLogic
         }
         $type_horsocope = $this->getConfiguration('type_horoscope');
 
-        log::add('horoscope', 'debug', '││ Type d\'horosocope : ' . $type_horsocope);
+        log::add('horoscope', 'debug', '││ ───▶︎ Type d\'horosocope : ' . $type_horsocope);
         log::add('horoscope', 'debug', '│└─────────');
 
         /* Création/Update Signe */
-        log::add('horoscope', 'debug', '│┌───────── MISE A JOUR DU SIGNE');
+        log::add('horoscope', 'debug', '│┌── :fg-success:Mise à jour du signe de l\'équipement : '  . $_eqName . ':/fg: ──');
         $cmd = $this->getCmd('info', 'signe'); //Mise à jour de la valeur
         if (is_object($cmd)) {
             $cmd->setConfiguration('value', $signe_zodiaque);
@@ -489,17 +491,17 @@ class horoscope extends eqLogic
             $cmd->event($signe_zodiaque);
         }
         $this->checkAndUpdateCmd('signe', $signe_zodiaque);
-        log::add('horoscope', 'debug', '││ Mise à jour Signe : ' . $signe_zodiaque);
+        log::add('horoscope', 'debug', '││ ───▶︎ Mise à jour Signe : ' . $signe_zodiaque);
         log::add('horoscope', 'debug', '│└─────────');
 
 
         $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope);
-        log::add('horoscope', 'debug', '│┌───────── MISE A JOUR DE L\'HOROSCOPE');
+        log::add('horoscope', 'debug', '│┌── :fg-info:Mise à jour de l\'équipement : '  . $_eqName . ':/fg: ──');
         foreach ($horoscope['themes'] as $theme_name => $message) {
             if (!is_string($message)) {
                 continue;
             }
-            log::add('horoscope', 'debug', "││ {$theme_name} : {$message}");
+            log::add('horoscope', 'debug', "││ ───▶︎ {$theme_name} : {$message}");
             //if (is_object($theme_name)) {
             $this->checkAndUpdateCmd($theme_name, $message);
             //}
@@ -527,9 +529,9 @@ class horoscopeCmd extends cmd
     public function execute($_options = array())
     {
         if ($this->getLogicalId() == 'refresh') {
-            log::add('horoscope', 'debug', ' ─────────> ACTUALISATION MANUELLE');
+            log::add('horoscope', 'debug', ' ─────────▶︎ ACTUALISATION MANUELLE');
             $this->getEqLogic()->getInformations();
-            log::add('horoscope', 'debug', ' ─────────> FIN ACTUALISATION MANUELLE');
+            log::add('horoscope', 'debug', ' ─────────▶︎ FIN ACTUALISATION MANUELLE');
             return;
         }
     }
