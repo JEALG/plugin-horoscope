@@ -462,7 +462,7 @@ class horoscope extends eqLogic
         if (!$this->getIsEnable()) return;
 
         $_eqName = $this->getName();
-        log::add('horoscope', 'debug', '┌── :fg-sucess:Mise à jour : '  . $_eqName . ':/fg: ──');
+        log::add('horoscope', 'debug', '┌──:fg-success: Mise à jour de '  . $_eqName . ':/fg: ──');
 
         /*  ********************** Récupération signe *************************** */
         log::add('horoscope', 'debug', '│┌── :fg-success:Configuration de l\'équipement : '  . $_eqName . ':/fg: ──');
