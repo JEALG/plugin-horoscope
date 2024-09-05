@@ -99,7 +99,7 @@ class horoscope extends eqLogic
         }
         return $theme_name_cmd;
     }
-    public function AddCommand($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO', $Equipement)
+    public function AddCommand($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO', $Equipement = null)
     {
         $Cmd = $this->getCmd(null, $_logicalId);
         if ($SubType === 'numeric') {
@@ -356,13 +356,9 @@ class horoscope extends eqLogic
         }
     }
 
-    public function postInsert()
-    {
-    }
+    public function postInsert() {}
 
-    public function preSave()
-    {
-    }
+    public function preSave() {}
 
     public function postSave()
     {
@@ -418,13 +414,9 @@ class horoscope extends eqLogic
         $this->getInformations();
     }
 
-    public function preRemove()
-    {
-    }
+    public function preRemove() {}
 
-    public function postRemove()
-    {
-    }
+    public function postRemove() {}
 
     public function getImage()
     {
