@@ -207,7 +207,7 @@ class horoscope extends eqLogic
                 $Equipement->AddCommand($horo_Name_Trad, $horo_Name, 'info', $SubType, $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
                 $order++;
             } else {
-                log::add('horoscope', 'debug', "│ " . __('Création Commande :', __FILE__) . $horo_Name . ' ==> ' . __('PAS DE CREATION DE LA COMMANDE/UPDATE', __FILE__));
+                log::add('horoscope', 'debug', "│ " . __('Création Commande :', __FILE__) . "{$horo_Name}" . ' ==> ' . __('Pas de création de la commande / Mise à jour', __FILE__));
             }
         }
         // Mise à jour les commandes specifique declarée dans le tableau de mapping
@@ -338,7 +338,7 @@ class horoscope extends eqLogic
                     $eqLogic->getinformations();
                 }
             } catch (Exception $e) {
-                log::add('horoscope', 'error', __('Expression cron non valide pour ', __FILE__) . $eqLogic->getHumanName() . ' : ' . $autorefresh);
+                log::add('horoscope', 'error', __('Expression cron non valide pour', __FILE__)  . ' '  . $eqLogic->getHumanName() . ' : ' . $autorefresh);
             }
         }
     }
