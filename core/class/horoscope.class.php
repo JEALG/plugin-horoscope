@@ -121,22 +121,22 @@ class horoscope extends eqLogic
                 $Cmd->setTemplate('mobile', $Template);
             }
             if ($SubType === 'numeric') {
-                $Cmd->setdisplay('forceReturnLineBefore', 1);
-                $Cmd->setdisplay('forceReturnLineAfter', 1);
+                $Cmd->setDisplay('forceReturnLineBefore', 1);
+                $Cmd->setDisplay('forceReturnLineAfter', 1);
             }
             $Cmd->setIsVisible($IsVisible);
 
             if ($icon != 'default') {
-                $Cmd->setdisplay('icon', '<i class="' . $icon . '"></i>');
+                $Cmd->setDisplay('icon', '<i class="' . $icon . '"></i>');
             }
             if ($forceLineB != 'default') {
-                $Cmd->setdisplay('forceReturnLineBefore', 1);
+                $Cmd->setDisplay('forceReturnLineBefore', 1);
             }
             if ($_iconname != 'default') {
-                $Cmd->setdisplay('showIconAndNamedashboard', 1);
+                $Cmd->setDisplay('showIconAndNamedashboard', 1);
             }
             if ($_noiconname != null) {
-                $Cmd->setdisplay('showNameOndashboard', 0);
+                $Cmd->setDisplay('showNameOndashboard', 0);
             }
             if ($_generic_type != null) {
                 $Cmd->setDisplay('generic_type', 'GENERIC_INFO');
@@ -329,16 +329,21 @@ class horoscope extends eqLogic
     public static function cron()
     {
         foreach (eqLogic::byType('horoscope', true) as $eqLogic) {
-            $autorefresh = $eqLogic->getConfiguration('autorefresh', '');
-
-            if ($autorefresh == '')  continue;
-            try {
-                $cron = new Cron\CronExpression($autorefresh, new Cron\FieldFactory);
-                if ($cron->isDue()) {
-                    $eqLogic->getinformations();
+            $autorefresh = $eqLogic->getConfiguration('autorefresh');
+            if ($autorefresh != '') {
+                try {
+                    $cron = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
+                    if ($cron->isDue()) {
+                        try {
+                            //log::add('horoscope', 'debug', __('Mise à jour des valeurs pour', __FILE__) . ' : ' . $eqLogic->getName());
+                            $eqLogic->getinformations();
+                        } catch (Exception $exc) {
+                            log::add('horoscope', 'error', __('Erreur pour ', __FILE__) . $eqLogic->getName() . ' : ' . $exc->getMessage());
+                        }
+                    }
+                } catch (Exception $exc) {
+                    log::add('horoscope', 'error', __('Expression cron non valide pour', __FILE__) . ' ' . $eqLogic->getName() . ' : ' . $autorefresh);
                 }
-            } catch (Exception $e) {
-                log::add('horoscope', 'error', __('Expression cron non valide pour', __FILE__)  . ' '  . $eqLogic->getHumanName() . ' : ' . $autorefresh);
             }
         }
     }
@@ -361,7 +366,6 @@ class horoscope extends eqLogic
 
     public function postSave()
     {
-        $_eqName = $this->getName();
         $Equipement = eqlogic::byId($this->getId());
         //log::add('horoscope', 'debug', 'postSave() => ' . $_eqName);
         if ($this->getConfiguration('type_horoscope') == '') {
@@ -369,7 +373,7 @@ class horoscope extends eqLogic
         }
 
         /*  ********************** Creéation des commandes signe *************************** */
-        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Création de la commande si besoin pour', __FILE__) . ' : '  . $_eqName . ':/fg: ──');
+        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Création de la commande si besoin pour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
         //$horo_ID = $this->getConfiguration('signe');
         $horo_ID = 'signe';
         $horo_Name = (__('signe', __FILE__));
