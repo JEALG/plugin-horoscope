@@ -456,11 +456,10 @@ class horoscope extends eqLogic
     {
         if (!$this->getIsEnable()) return;
 
-        $_eqName = $this->getName();
-        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Mise à jour', __FILE__) . ' ::/fg: '  . $_eqName . ' ──');
+        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Mise à jour', __FILE__) . ' ::/fg: '  . $this->getName() . ' (' . $this->getHumanName() . ') ──');
 
         /*  ********************** Récupération signe *************************** */
-        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Configuration de l\'équipement', __FILE__) . ' ::/fg: '   . $_eqName . ' ──');
+        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Configuration de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
             log::add('horoscope', 'error', '││ ───▶︎' . __('Configuration : Signe zodiaque inexistant', __FILE__) . ' : ' . $this->getConfiguration('signe_zodiaque'));
@@ -478,7 +477,7 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│└─────────');
 
         /* Création/Update Signe */
-        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Mise à jour du signe de l\'équipement', __FILE__) . ' ::/fg: '   . $_eqName . ' ──');
+        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Mise à jour du signe de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
         $cmd = $this->getCmd('info', 'signe'); //Mise à jour de la valeur
         if (is_object($cmd)) {
             $cmd->setConfiguration('value', $signe_zodiaque);
@@ -491,7 +490,7 @@ class horoscope extends eqLogic
 
 
         $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope);
-        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement', __FILE__) . ' ::/fg: ' . $_eqName . ' ──');
+        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
         foreach ($horoscope['themes'] as $theme_name => $message) {
             if (!is_string($message)) {
                 continue;
