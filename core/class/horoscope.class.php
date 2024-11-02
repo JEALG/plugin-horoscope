@@ -179,7 +179,7 @@ class horoscope extends eqLogic
     }
     public function AddCommand_theme($horo_signe, $order, $horo_type, $Equipement)
     {
-        $horoscope = self::getHoroscopeForSigne($horo_signe, $horo_type);
+        $horoscope = self::getHoroscopeForSigne($horo_signe, $horo_type, $this->getName());
 
         // met a jour toutes les commandes contenants les phrases de l'horoscope
         foreach ($horoscope['themes'] as $horo_Name => $message) {
@@ -266,7 +266,7 @@ class horoscope extends eqLogic
         return $return;
     }
 
-    public static function getHoroscopeForSigne($signe_zodiaque, $type_horsocope)
+    public static function getHoroscopeForSigne($signe_zodiaque, $type_horsocope, $name)
     {
 
         if ($type_horsocope == 'traditionnel' || $type_horsocope == 'traditionnel_condense') {
@@ -278,49 +278,56 @@ class horoscope extends eqLogic
         $url = sprintf(self::$_url_template, $signe_zodiaque);
         log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête', __FILE__) . ':/fg: ──');
         log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
-        $xmlData = file_get_contents($url);
-        $xml = new SimpleXMLElement($xmlData);
+        try {
+            //log::add('horoscope', 'debug', __('Mise à jour des valeurs pour', __FILE__) . ' : ' . $eqLogic->getName());
+            //$xmlData = file_get_contents($url);
+            $xmlData = file_get_contents($url, false, stream_context_create(array('socket' => array('bindto' => '0:0'))));
+            $xml = new SimpleXMLElement($xmlData);
 
-        // contient tous le champ description
-        $description = $xml->channel->item->description;
-        $title = $xml->channel->item->title;
-        log::add('horoscope', 'debug', '││ :fg-info:' . __('Date', __FILE__) . ' ::/fg: ' . $title);
-        log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $description);
+            // contient tous le champ description
+            $description = $xml->channel->item->description;
+            $title = $xml->channel->item->title;
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Date', __FILE__) . ' ::/fg: ' . $title);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $description);
 
-        // extrait les paragraphes de la description
-        $paragraphes = preg_split('/<br><br>/', $description);
+            // extrait les paragraphes de la description
+            $paragraphes = preg_split('/<br><br>/', $description);
 
-        // la liste horoscope contient une cle par theme de l'horoscope - chaque nom de theme est repris tel quel depuis le XML - en supplement chaque nom de theme est duppliquer en remplacant tous les caracteres non alphabetique par des underscores
-        $horoscope = ['themes' => [], 'themes_simple' => []];
+            // la liste horoscope contient une cle par theme de l'horoscope - chaque nom de theme est repris tel quel depuis le XML - en supplement chaque nom de theme est duppliquer en remplacant tous les caracteres non alphabetique par des underscores
+            $horoscope = ['themes' => [], 'themes_simple' => []];
 
-        // filtre les paragraphes pour ne retourner que ceux contenant une phrase d'horoscope
-        foreach ($paragraphes as $key => $paragraphe) {
-            // elimine les paragraphes qui ne commence par la chaine suivante :
-            if (substr($paragraphe, 0, strlen('<b>Horoscope')) !== '<b>Horoscope') {
-                unset($paragraphes[$key]);
-            } else {
-                $paragraphe = strip_tags($paragraphe);
-                $matches = [];
-                if (preg_match('/^Horoscope\s*[^ ]+\s*-\s*(.*)\n(.*)/', $paragraphe, $matches) > 0) {
-                    if (count($matches) == 3) {
-                        $theme = $matches[1];
-                        $theme = str_replace(' ', '', $theme);
-                        $theme = str_replace('\'', '', $theme);
-                        // Elime le point en fin de phrase 
-                        //$theme2 = rtrim($theme, '.');
-                        //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $theme2);
-                        $phrase = $matches[2];
-                        // Elime le point en fin de phrase 
-                        $phrase = rtrim($phrase, '.');
-                        //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $phrase);
-                        // Fin Elime le point en fin de phrase 
-                        $theme_strip = strtolower(preg_replace('/[^\wéè]/', '_', $theme));
-                        $horoscope['themes'][$theme] = $phrase;
-                        $horoscope['themes_simple'][$theme_strip] = $phrase;
+            // filtre les paragraphes pour ne retourner que ceux contenant une phrase d'horoscope
+            foreach ($paragraphes as $key => $paragraphe) {
+                // elimine les paragraphes qui ne commence par la chaine suivante :
+                if (substr($paragraphe, 0, strlen('<b>Horoscope')) !== '<b>Horoscope') {
+                    unset($paragraphes[$key]);
+                } else {
+                    $paragraphe = strip_tags($paragraphe);
+                    $matches = [];
+                    if (preg_match('/^Horoscope\s*[^ ]+\s*-\s*(.*)\n(.*)/', $paragraphe, $matches) > 0) {
+                        if (count($matches) == 3) {
+                            $theme = $matches[1];
+                            $theme = str_replace(' ', '', $theme);
+                            $theme = str_replace('\'', '', $theme);
+                            // Elime le point en fin de phrase 
+                            //$theme2 = rtrim($theme, '.');
+                            //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $theme2);
+                            $phrase = $matches[2];
+                            // Elime le point en fin de phrase 
+                            $phrase = rtrim($phrase, '.');
+                            //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $phrase);
+                            // Fin Elime le point en fin de phrase 
+                            $theme_strip = strtolower(preg_replace('/[^\wéè]/', '_', $theme));
+                            $horoscope['themes'][$theme] = $phrase;
+                            $horoscope['themes_simple'][$theme_strip] = $phrase;
+                        }
                     }
                 }
             }
+        } catch (Exception $exc) {
+            log::add('horoscope', 'error', __('Erreur pour la récupération des données sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
         }
+
         log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
@@ -489,7 +496,7 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│└─────────');
 
 
-        $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope);
+        $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope, $this->getName());
         log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
         foreach ($horoscope['themes'] as $theme_name => $message) {
             if (!is_string($message)) {
