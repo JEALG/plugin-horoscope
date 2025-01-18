@@ -2,6 +2,8 @@
 
 # Jeedom - Horoscope
 
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/JEALG/plugin-horoscope/graphs/commit-activity)
+[![GitHub contributors](https://img.shields.io/github/contributors/jeedom/core.svg)](https://github.com/JEALG/plugin-horoscope/graphs/contributors/)
 
 ---
 
