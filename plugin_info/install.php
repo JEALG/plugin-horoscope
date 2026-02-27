@@ -62,7 +62,7 @@ function horoscope_update()
     }
 
     log::add('horoscope', 'debug', '│ Etape 3/3 : Mise à jour des équipements');
-    //message::add('Plugin Horoscope', 'Merci pour la mise à jour de ce plugin, consultez le changelog.');
+    message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
     }
