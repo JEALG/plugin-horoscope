@@ -38,16 +38,15 @@ function horoscope_update()
     if (is_object($cron)) {
         $cron->remove();
     }
-
     config::save('functionality::cron::enable', 1, 'horoscope');
     $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
-    log::add('horoscope', 'debug', '│ Etape 1/4 : Update(s) nouveautée(s)');
-    //log::add('horoscope', 'debug', '│ '.(__('Étape', __FILE__)) . ' 1/4 : ' . (__('Mise en place des nouveautés', __FILE__)));
+    log::add('horoscope', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 1/4 : ' . (__('Mise en place des nouveautés', __FILE__)));
     // foreach ($eqLogics as $eqLogic) {
     //}
-    log::add('horoscope', 'debug', '│ Etape 2/4 : Nettoyage suite changement source');
-    //log::add('horoscope', 'debug', '│ '.(__('Étape', __FILE__)) . ' 2/4 : ' . (__('Netoyage suite changement source', __FILE__)));
+
+    //log::add('horoscope', 'debug', '│ Etape 2/4 : Nettoyage suite changement source');
+    log::add('horoscope', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 2/4 : ' . (__('Netoyage suite changement source', __FILE__)));
     removeLogicId('Amour');
     removeLogicId('Argent');
     removeLogicId('Santé');
@@ -57,8 +56,8 @@ function horoscope_update()
     removeLogicId('Nombredechance');
     removeLogicId('Clindoeil');
 
-    log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
-    //log::add('horoscope', 'debug', '│ '.(__('Étape', __FILE__)) . ' 3/4 : ' . (__('Sauvegarde des équipements', __FILE__)));
+    //log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
+    log::add('horoscope', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 3/4 : ' . (__('Sauvegarde des équipements', __FILE__)));
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
