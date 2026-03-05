@@ -157,8 +157,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <div class="col-sm-6">
                                     <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_horoscope">
                                         <option value=''>{{Aucun}}</option>
-                                        <option value='traditionnel'>{{Traditionnel Quotidien}}</option>
-                                        <option value='traditionnel_condense'>{{Traditionnel Quotidien Condensé}}</option>
+                                        <option value='traditionnel'>Astro.com</option>
+                                        <!--<<option value='traditionnel_condense'>{{Traditionnel Quotidien Condensé}}</option>-->
                                         <!--<option value='traditionnel_hebdomadaire'>{{Traditionnel hebdomadaire}}</option>-->
                                     </select>
                                 </div>

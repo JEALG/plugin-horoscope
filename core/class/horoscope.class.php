@@ -242,8 +242,6 @@ class horoscope extends eqLogic
 
         /*  ********************** Creéation des commandes signe *************************** */
         log::add('horoscope', 'debug', '┌── :fg-success:' . __('Création de la commande si besoin pour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
-        //$horo_ID = $this->getConfiguration('signe');
-        $horo_Name = (__('signe', __FILE__));
         $horo_type = $this->getConfiguration('type_horoscope');
         $horo_signe = $this->getConfiguration('signe');
         $horo_Template = 'horoscope::Signe zodiaque';
