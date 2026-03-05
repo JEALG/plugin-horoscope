@@ -40,16 +40,40 @@ function horoscope_update()
     }
 
     config::save('functionality::cron::enable', 1, 'horoscope');
-
-    log::add('horoscope', 'debug', '│ Etape 1/3 : Update(s) nouveautée(s)');
-
     $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
+    ¨
+    log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 1/4 : ' . (__('Mise en place des nouveautés', __FILE__)));
     foreach ($eqLogics as $eqLogic) {
-        updateLogicalId($eqLogic, 'Nombredechance', null, 'numeric');
+        // Changement Id pour Wifi
+        UpdateLogicalId($eqLogic, 'listblack', 'blacklist', null);
+        UpdateLogicalId($eqLogic, 'listwhite', 'whitelist', null);
+        UpdateLogicalId($eqLogic, 'wifimac_filter_state', 'mac_filter_state', null);
+        UpdateLogicalId($eqLogic, 'wifiPlanning', 'use_planning', null);
+        //Changement Téléphonie 20240725
+        UpdateLogicalId($eqLogic, 'nbmissed', 'missed', null);
+        UpdateLogicalId($eqLogic, 'nbaccepted', 'accepted', null);
+        UpdateLogicalId($eqLogic, 'nboutgoing', 'outgoing', null);
+        //Changement Nom Support Mode Éco-WiFi 20250111
+        UpdateLogicalId($eqLogic, 'has_eco_wifi', null, null, __('Support Mode Éco-WiFi', __FILE__));
+        UpdateLogicalId($eqLogic, 'planning_mode', null, null, __('Etat Mode de veille planning', __FILE__));
+        UpdateLogicalId($eqLogic, 'wifiPlanningOn', 'use_planningOn', null, null);
+        UpdateLogicalId($eqLogic, 'wifiPlanningOff', 'use_planningOff', null, null);
+        UpdateLogicalId($eqLogic, 'wifiOn', 'wifiStatutOn', null, null);
+        UpdateLogicalId($eqLogic, 'wifiOff', 'wifiStatutOff', null, null);
     }
+  
+    log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 2/4 : ' . (__('Netoyage suite changement source', __FILE__)));
+    removeLogicId('Amour');
+    removeLogicId('Argent');
+    removeLogicId('Santé');
+    removeLogicId('Travail');
+    removeLogicId('Famille');
+    removeLogicId('Viesociale');
+    removeLogicId('Nombredechance');
+    removeLogicId('Clindoeil');
 
-    log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
+    log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 3/4 : ' . (__('Sauvegarde des équipements', __FILE__)));
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
@@ -61,8 +85,8 @@ function horoscope_update()
         log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
     }
 
-    log::add('horoscope', 'debug', '│ Etape 3/3 : Mise à jour des équipements');
-    message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
+    log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 4/4 : ' . (__('Mise à jour des équipement', __FILE__)));
+    //message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
     }
@@ -90,5 +114,15 @@ function horoscope_remove()
     $cron = cron::byClassAndFunction('horoscope', 'pull');
     if (is_object($cron)) {
         $cron->remove();
+    }
+}
+function removeLogicId($cmdDel)
+{
+    $eqLogics = eqLogic::byType('horoscope');
+    foreach ($eqLogics as $eqLogic) {
+        $cmd = $eqLogic->getCmd(null, $cmdDel);
+        if (is_object($cmd)) {
+            $cmd->remove();
+        }
     }
 }
