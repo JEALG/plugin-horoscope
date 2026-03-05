@@ -13,7 +13,7 @@
         "Création Commande": "Creazione di ordini",
         "Création de la commande si besoin pour": "Se necessario, creare un comando per",
         "Date": "Data",
-        "Date Horoscope": "",
+        "Date Horoscope": "Data Oroscopo",
         "Description": "Descrizione",
         "Début de l\\'actualisation manuelle": "Inizio dell'aggiornamento manuale",
         "Erreur pour ": "Errore per",
@@ -26,14 +26,14 @@
         "Info requête": "Richiedi info",
         "Le champ \"Signe du zodiaque\" ne peut être vide": "Il campo \"Segno zodiacale\" non può essere vuoto",
         "Le champ SIGNE DU ZODIAQUE ne peut être vide": "Il campo SEGNO ZODIACO non può essere vuoto",
-        "Le fichier Json est vide": "",
+        "Le fichier Json est vide": "Il file Json è vuoto",
         "Mise à jour": "Mise à jour",
         "Mise à jour de l\\'équipement": "Aggiornamenti delle apparecchiature",
         "Mise à jour des valeurs pour": "Aggiornare i valori per",
         "Nom Information": "Nome Informazioni",
         "Ordre": "Ordine",
         "Pas d'action pour la commande execute": "Nessuna azione per il comando esegui",
-        "Pas de mise à jour": "",
+        "Pas de mise à jour": "Nessun aggiornamento",
         "Rafraichir": "Aggiorna",
         "Signe": "Segno",
         "Signe du zodiaque": "Segno zodiacale",
@@ -41,7 +41,7 @@
         "Type Horoscope": "Tipo Oroscopo",
         "Type d\\'horosocope": "Tipo di oroscopo",
         "Type de générique": "Tipo di crediti",
-        "Valeur Json": "",
+        "Valeur Json": "Valore Json",
         "dans la commande": "nel",
         "signe": "segno"
     },
@@ -116,10 +116,10 @@
         "Équipement visible": "Apparecchiature visibili"
     },
     "plugins\/horoscope\/plugin_info\/install.php": {
-        "Mise en place des nouveautés": "",
-        "Mise à jour des équipement": "",
-        "Netoyage suite changement source": "",
-        "Sauvegarde des équipements": "",
-        "Étape": ""
+        "Mise en place des nouveautés": "Implementazione delle novità",
+        "Mise à jour des équipement": "Aggiornamento delle apparecchiature",
+        "Netoyage suite changement source": "Pulizia dopo il cambio di fonte",
+        "Sauvegarde des équipements": "Salvataggio delle apparecchiature",
+        "Étape": "Fase"
     }
 }

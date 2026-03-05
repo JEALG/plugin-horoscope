@@ -13,7 +13,7 @@
         "Création Commande": "Erstellung Bestellung",
         "Création de la commande si besoin pour": "Erstellen Sie bei Bedarf einen Auftrag für",
         "Date": "Datum",
-        "Date Horoscope": "",
+        "Date Horoscope": "Datum Horoskop",
         "Description": "Beschreibung",
         "Début de l\\'actualisation manuelle": "Beginn der manuellen Aktualisierung",
         "Erreur pour ": "Fehler für",
@@ -26,14 +26,14 @@
         "Info requête": "Info Abfrage",
         "Le champ \"Signe du zodiaque\" ne peut être vide": "Das Feld \"Sternzeichen\" kann nicht leer sein",
         "Le champ SIGNE DU ZODIAQUE ne peut être vide": "Das Feld ZODIAKZEICHEN darf nicht leer sein",
-        "Le fichier Json est vide": "",
+        "Le fichier Json est vide": "Die Json-Datei ist leer.",
         "Mise à jour": "Update",
         "Mise à jour de l\\'équipement": "Update der Ausrüstung",
         "Mise à jour des valeurs pour": "Aktualisierung der Werte für",
         "Nom Information": "Name Information",
         "Ordre": "Befehl",
         "Pas d'action pour la commande execute": "Keine Aktion für den Befehl execute",
-        "Pas de mise à jour": "",
+        "Pas de mise à jour": "Kein Update",
         "Rafraichir": "Auffrischen",
         "Signe": "Zeichen",
         "Signe du zodiaque": "Sternzeichen",
@@ -41,7 +41,7 @@
         "Type Horoscope": "Typ Horoskop",
         "Type d\\'horosocope": "Art des Horoskope",
         "Type de générique": "Art des Vorspanns",
-        "Valeur Json": "",
+        "Valeur Json": "Json-Wert",
         "dans la commande": "in der Bestellung",
         "signe": "zeichen"
     },
@@ -116,10 +116,10 @@
         "Équipement visible": "Sichtbare Ausstattung"
     },
     "plugins\/horoscope\/plugin_info\/install.php": {
-        "Mise en place des nouveautés": "",
-        "Mise à jour des équipement": "",
-        "Netoyage suite changement source": "",
-        "Sauvegarde des équipements": "",
-        "Étape": ""
+        "Mise en place des nouveautés": "Einführung von Neuerungen",
+        "Mise à jour des équipement": "Aktualisierung der Ausrüstung",
+        "Netoyage suite changement source": "Reinigung nach Quellenwechsel",
+        "Sauvegarde des équipements": "Sicherung der Ausrüstung",
+        "Étape": "Schritt"
     }
 }
