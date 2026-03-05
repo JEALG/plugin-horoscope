@@ -13,7 +13,7 @@
         "Création Commande": "Creación de pedidos",
         "Création de la commande si besoin pour": "Crear un comando si es necesario para",
         "Date": "Fecha",
-        "Date Horoscope": "",
+        "Date Horoscope": "Fecha Horóscopo",
         "Description": "Descripción",
         "Début de l\\'actualisation manuelle": "Inicio de la actualización manual",
         "Erreur pour ": "Error para",
@@ -26,14 +26,14 @@
         "Info requête": "Solicitar información",
         "Le champ \"Signe du zodiaque\" ne peut être vide": "El campo \"Signo del zodiaco\" no puede estar vacío",
         "Le champ SIGNE DU ZODIAQUE ne peut être vide": "El campo SIGNO ZODíaco no puede estar vacío",
-        "Le fichier Json est vide": "",
+        "Le fichier Json est vide": "El archivo Json está vacío.",
         "Mise à jour": "Actualización",
         "Mise à jour de l\\'équipement": "Actualizaciones de equipos",
         "Mise à jour des valeurs pour": "Actualizar valores para",
         "Nom Information": "Nombre Información",
         "Ordre": "Pida",
         "Pas d'action pour la commande execute": "No hay acción para ejecutar comando",
-        "Pas de mise à jour": "",
+        "Pas de mise à jour": "Sin actualizaciones",
         "Rafraichir": "Refrescar",
         "Signe": "Firma",
         "Signe du zodiaque": "Signo del zodíaco",
@@ -41,7 +41,7 @@
         "Type Horoscope": "Tipo Horóscopo",
         "Type d\\'horosocope": "Tipo de horóscopo",
         "Type de générique": "Tipo de créditos",
-        "Valeur Json": "",
+        "Valeur Json": "Valor Json",
         "dans la commande": "en el",
         "signe": "firmar"
     },
@@ -102,7 +102,6 @@
         "Signe du zodiaque": "Signo del zodíaco",
         "Supprimer": "Eliminar",
         "Taureau": "Toro",
-        "Traditionnel Quotidien": "Diario tradicional",
         "Traditionnel Quotidien Condensé": "Diario tradicional Condensado",
         "Traditionnel hebdomadaire": "Semanal tradicional",
         "Type": "Tipo",
@@ -116,10 +115,10 @@
         "Équipement visible": "Equipos visibles"
     },
     "plugins\/horoscope\/plugin_info\/install.php": {
-        "Mise en place des nouveautés": "",
-        "Mise à jour des équipement": "",
-        "Netoyage suite changement source": "",
-        "Sauvegarde des équipements": "",
-        "Étape": ""
+        "Mise en place des nouveautés": "Implementación de novedades",
+        "Mise à jour des équipement": "Actualización de equipos",
+        "Netoyage suite changement source": "Limpieza tras cambio de fuente",
+        "Sauvegarde des équipements": "Copia de seguridad de los equipos",
+        "Étape": "Etapa"
     }
 }

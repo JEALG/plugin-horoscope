@@ -13,7 +13,7 @@
         "Création Commande": "Criação de encomendas",
         "Création de la commande si besoin pour": "Criar um comando, se necessário, para",
         "Date": "Data",
-        "Date Horoscope": "",
+        "Date Horoscope": "Horóscopo diário",
         "Description": "Descrição",
         "Début de l\\'actualisation manuelle": "Início da atualização manual",
         "Erreur pour ": "Erro para",
@@ -26,14 +26,14 @@
         "Info requête": "Pedir informações",
         "Le champ \"Signe du zodiaque\" ne peut être vide": "O campo \"Signo do zodíaco\" não pode estar vazio",
         "Le champ SIGNE DU ZODIAQUE ne peut être vide": "O campo ZODiac SIGN não pode estar vazio",
-        "Le fichier Json est vide": "",
+        "Le fichier Json est vide": "O ficheiro Json está vazio",
         "Mise à jour": "Actualização",
         "Mise à jour de l\\'équipement": "Actualizações de equipamento",
         "Mise à jour des valeurs pour": "Atualizar valores para",
         "Nom Information": "Informações sobre o nome",
         "Ordre": "Encomendar",
         "Pas d'action pour la commande execute": "Nenhuma ação para executar o comando",
-        "Pas de mise à jour": "",
+        "Pas de mise à jour": "Sem atualizações",
         "Rafraichir": "Recarregar",
         "Signe": "Sinal",
         "Signe du zodiaque": "Signo do zodíaco",
@@ -41,7 +41,7 @@
         "Type Horoscope": "Tipo Horóscopo",
         "Type d\\'horosocope": "Tipo de horóscopo",
         "Type de générique": "Tipo de créditos",
-        "Valeur Json": "",
+        "Valeur Json": "Valor Json",
         "dans la commande": "no",
         "signe": "sinal"
     },
@@ -102,7 +102,6 @@
         "Signe du zodiaque": "Signo do zodíaco",
         "Supprimer": "Eliminar",
         "Taureau": "Touro",
-        "Traditionnel Quotidien": "Diário tradicional",
         "Traditionnel Quotidien Condensé": "Diário tradicional Condensado",
         "Traditionnel hebdomadaire": "Semanário tradicional",
         "Type": "Tipo",
@@ -116,10 +115,10 @@
         "Équipement visible": "Equipamentos visíveis"
     },
     "plugins\/horoscope\/plugin_info\/install.php": {
-        "Mise en place des nouveautés": "",
-        "Mise à jour des équipement": "",
-        "Netoyage suite changement source": "",
-        "Sauvegarde des équipements": "",
-        "Étape": ""
+        "Mise en place des nouveautés": "Implementação das novidades",
+        "Mise à jour des équipement": "Atualização dos equipamentos",
+        "Netoyage suite changement source": "Limpeza após alteração da fonte",
+        "Sauvegarde des équipements": "Proteção dos equipamentos",
+        "Étape": "Etapa"
     }
 }
