@@ -44,24 +44,8 @@ function horoscope_update()
     $eqLogics = eqLogic::byType($plugin->getId());
     ¨
     log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 1/4 : ' . (__('Mise en place des nouveautés', __FILE__)));
-    foreach ($eqLogics as $eqLogic) {
-        // Changement Id pour Wifi
-        UpdateLogicalId($eqLogic, 'listblack', 'blacklist', null);
-        UpdateLogicalId($eqLogic, 'listwhite', 'whitelist', null);
-        UpdateLogicalId($eqLogic, 'wifimac_filter_state', 'mac_filter_state', null);
-        UpdateLogicalId($eqLogic, 'wifiPlanning', 'use_planning', null);
-        //Changement Téléphonie 20240725
-        UpdateLogicalId($eqLogic, 'nbmissed', 'missed', null);
-        UpdateLogicalId($eqLogic, 'nbaccepted', 'accepted', null);
-        UpdateLogicalId($eqLogic, 'nboutgoing', 'outgoing', null);
-        //Changement Nom Support Mode Éco-WiFi 20250111
-        UpdateLogicalId($eqLogic, 'has_eco_wifi', null, null, __('Support Mode Éco-WiFi', __FILE__));
-        UpdateLogicalId($eqLogic, 'planning_mode', null, null, __('Etat Mode de veille planning', __FILE__));
-        UpdateLogicalId($eqLogic, 'wifiPlanningOn', 'use_planningOn', null, null);
-        UpdateLogicalId($eqLogic, 'wifiPlanningOff', 'use_planningOff', null, null);
-        UpdateLogicalId($eqLogic, 'wifiOn', 'wifiStatutOn', null, null);
-        UpdateLogicalId($eqLogic, 'wifiOff', 'wifiStatutOff', null, null);
-    }
+   // foreach ($eqLogics as $eqLogic) {
+    //}
   
     log::add('horoscope', 'debug', '│ .'(__('Étape', __FILE__)) . ' 2/4 : ' . (__('Netoyage suite changement source', __FILE__)));
     removeLogicId('Amour');
