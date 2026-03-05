@@ -152,7 +152,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Type de Horoscope}}
-                                    <sup><i class="fas fa-question-circle" title="{{Choisir un type d'horsocope}}"></i></sup>
+                                    <sup><i class="fas fa-question-circle" title="{{Source de l'horsocope}}"></i></sup>
                                 </label>
                                 <div class="col-sm-6">
                                     <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_horoscope">
