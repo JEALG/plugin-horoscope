@@ -102,7 +102,6 @@
         "Signe du zodiaque": "Zodiac sign",
         "Supprimer": "Delete",
         "Taureau": "Taurus",
-        "Traditionnel Quotidien": "Traditional Daily",
         "Traditionnel Quotidien Condensé": "Traditional Daily Condensed",
         "Traditionnel hebdomadaire": "Traditional weekly",
         "Type": "Type",
@@ -118,7 +117,7 @@
     "plugins\/horoscope\/plugin_info\/install.php": {
         "Mise en place des nouveautés": "Implementation of new features",
         "Mise à jour des équipement": "Equipment update",
-        "Netoyage suite changement source": "Cleaning after source change",
+        "Netoyage suite changement source": "Cleaning following source change",
         "Sauvegarde des équipements": "Equipment backup",
         "Étape": "Step"
     }
