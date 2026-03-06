@@ -13,7 +13,6 @@
         "Création Commande": "Creation Command",
         "Création de la commande si besoin pour": "Create command if required for",
         "Date de l\\'Horoscope": "Horoscope date",
-        "Description": "Description",
         "Début de l\\'actualisation manuelle": "Start of manual update",
         "Erreur pour ": "Error for",
         "Erreur pour la récupération des données sur le site internet pour": "Error retrieving data from website for",
@@ -41,6 +40,8 @@
         "Type d\\'horosocope": "Horosocope type",
         "Type de générique": "Generic type",
         "Valeur Json": "Json value",
+        "Valeur date": "Date value",
+        "Valeur de l\\'horoscope": "Horoscope value",
         "dans la commande": "in the order"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
