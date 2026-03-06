@@ -161,12 +161,12 @@ class horoscope extends eqLogic
         $data = json_decode($jsonStr, true);
         $horoscope['signe'] = $signe_zodiaque;
         log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête', __FILE__) . ':/fg: ──');
-        log::add('horoscope', 'debug', '│|:fg-info:URL : :/fg:' . $url);
+        log::add('horoscope', 'debug', '│| :fg-info:URL : :/fg:' . $url);
         if (!is_array($data)) {
             log::add('horoscope', 'debug', '││:fg-danger:' . __('Le fichier Json est vide', __FILE__) . ' ───▶︎ ' .  __('Pas de mise à jour', __FILE__) . ':/fg:');
             return false;
         } else {
-            log::add('horoscope', 'debug', '||:fg-info:' . __('Valeur Json', __FILE__) . ':/fg: ' . $jsonStr);
+            log::add('horoscope', 'debug', '|| :fg-info:' . __('Valeur Json', __FILE__) . ':/fg: ' . $jsonStr);
         }
 
 
