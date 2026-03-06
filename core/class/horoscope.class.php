@@ -179,8 +179,8 @@ class horoscope extends eqLogic
                     $horoscope['horoscope'] = trim($description);
                 }
             }
-
-            log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $horoscope['horoscope']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur date', __FILE__) . ' ::/fg: ' . $horoscope['date']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur de l\'horoscope', __FILE__) . ' ::/fg: ' . $horoscope['horoscope']);
         } catch (Exception $exc) {
             log::add('horoscope', 'error', __('Erreur pour la récupération des données sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
         }
