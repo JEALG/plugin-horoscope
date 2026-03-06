@@ -156,9 +156,15 @@ class horoscope extends eqLogic
 
     public static function getHoroscopeForSigne($signe_zodiaque, $type_horsocope, $name)
     {
-        $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/jour.json";
+        if ($type_horsocope === 'astro_jour') {
+            $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/jour.json";
+        } else {
+            $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/hebdomadaire.json";
+        }
+
         $jsonStr = file_get_contents($url);
         $data = json_decode($jsonStr, true);
+        $data_log = str_replace(["\r", "\n"], "", $jsonStr);
         $horoscope['signe'] = $signe_zodiaque;
         log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête', __FILE__) . ':/fg: ──');
         log::add('horoscope', 'debug', '│| :fg-info:URL : :/fg:' . $url);
@@ -166,7 +172,7 @@ class horoscope extends eqLogic
             log::add('horoscope', 'debug', '││:fg-danger:' . __('Le fichier Json est vide', __FILE__) . ' ───▶︎ ' .  __('Pas de mise à jour', __FILE__) . ':/fg:');
             return false;
         } else {
-            log::add('horoscope', 'debug', '|| :fg-info:' . __('Valeur Json', __FILE__) . ':/fg: ' . $jsonStr);
+            log::add('horoscope', 'debug', '|| :fg-info:' . __('Valeur Json', __FILE__) . ':/fg: ' . str_replace(["\r", "\n"], "", $jsonStr));
         }
 
 
@@ -270,8 +276,8 @@ class horoscope extends eqLogic
             throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
         }
         /*  ********************** Du type d'horoscope signe *************************** */
-        if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'traditionnel');
+        if ($this->getConfiguration('type_horoscope') == '' || $this->getConfiguration('type_horoscope') == 'traditionnel') {
+            $this->setConfiguration('type_horoscope', 'astro_jour');
         }
     }
 
@@ -290,23 +296,6 @@ class horoscope extends eqLogic
             }
         }
         return 'plugins/horoscope/plugin_info/horoscope_icon.png';
-    }
-    public function getHoroscopeCreateCMD($theme_name, $type_horsocope)
-    {
-        switch ($type_horsocope) {
-            case 'traditionnel_condense':
-                if ($theme_name === 'Amour' || $theme_name === 'Travail') {
-                    $create_cmd = true;
-                    //log::add('horoscope', 'debug', "│ {$theme_name} : CREATION");
-                } else {
-                    $create_cmd = false;
-                    //log::add('horoscope', 'debug', "│ {$theme_name} : PAS DE CREATION");
-                }
-                break;
-            default:
-                $create_cmd = true;
-        }
-        return $create_cmd;
     }
 
     /*     * **********************Getteur Setteur*************************** */
