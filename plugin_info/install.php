@@ -61,7 +61,7 @@ function horoscope_update()
     try {
         $eqs = eqLogic::byType('horoscope');
         foreach ($eqs as $eq) {
-            $eq->save();
+            $eq->save(true);
         }
     } catch (Exception $e) {
         $e = print_r($e, 1);
@@ -88,7 +88,7 @@ function updateLogicalId($eqLogic, $from, $to = null, $SubType = null)
         if ($SubType != null) {
             $cmd->setSubType($SubType);
         }
-        $cmd->save();
+        $cmd->save(true);
     }
 }
 
