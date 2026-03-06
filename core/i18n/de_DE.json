@@ -13,7 +13,6 @@
         "Création Commande": "Erstellung Bestellung",
         "Création de la commande si besoin pour": "Erstellen Sie bei Bedarf einen Auftrag für",
         "Date de l\\'Horoscope": "Datum des Horoskops",
-        "Description": "Beschreibung",
         "Début de l\\'actualisation manuelle": "Beginn der manuellen Aktualisierung",
         "Erreur pour ": "Fehler für",
         "Erreur pour la récupération des données sur le site internet pour": "Fehler beim Abrufen von Daten auf der Website für",
@@ -41,6 +40,8 @@
         "Type d\\'horosocope": "Art des Horoskope",
         "Type de générique": "Art des Vorspanns",
         "Valeur Json": "Json-Wert",
+        "Valeur date": "Wert Datum",
+        "Valeur de l\\'horoscope": "Wert des Horoskops",
         "dans la commande": "in der Bestellung"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {

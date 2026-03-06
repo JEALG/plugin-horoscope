@@ -13,7 +13,6 @@
         "Création Commande": "Creazione di ordini",
         "Création de la commande si besoin pour": "Se necessario, creare un comando per",
         "Date de l\\'Horoscope": "Data dell'oroscopo",
-        "Description": "Descrizione",
         "Début de l\\'actualisation manuelle": "Inizio dell'aggiornamento manuale",
         "Erreur pour ": "Errore per",
         "Erreur pour la récupération des données sur le site internet pour": "Errore nel recupero dei dati dal sito web per",
@@ -41,6 +40,8 @@
         "Type d\\'horosocope": "Tipo di oroscopo",
         "Type de générique": "Tipo di crediti",
         "Valeur Json": "Valore Json",
+        "Valeur date": "Valore data",
+        "Valeur de l\\'horoscope": "Valore dell'oroscopo",
         "dans la commande": "nel"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
