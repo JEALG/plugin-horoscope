@@ -151,7 +151,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-4 control-label">{{Type de Horoscope}}
+                                <label class="col-sm-4 control-label">{{Source de l\'horoscope}}
                                     <sup><i class="fas fa-question-circle" title="{{Source de l'horsocope}}"></i></sup>
                                 </label>
                                 <div class="col-sm-6">

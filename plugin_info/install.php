@@ -45,7 +45,6 @@ function horoscope_update()
     // foreach ($eqLogics as $eqLogic) {
     //}
 
-    //log::add('horoscope', 'debug', '│ Etape 2/4 : Nettoyage suite changement source');
     log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 2/4 :/fg:───▶︎ ' . (__('Netoyage suite changement source', __FILE__)));
     removeLogicId('Amour');
     removeLogicId('Argent');
@@ -57,7 +56,6 @@ function horoscope_update()
     removeLogicId('Clindoeil');
     removeLogicId('Citationdujour');
 
-    //log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
     log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/4 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
     //resave eqLogics for new cmd:
     try {

@@ -246,9 +246,9 @@ class horoscope extends eqLogic
         $horo_signe = $this->getConfiguration('signe');
         $horo_Template = 'horoscope::Signe zodiaque';
         $order = 1;
-        $Equipement->AddCommand((__('signe', __FILE__)), 'signe', 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null);
+        $Equipement->AddCommand((__('Signe du zodiaque', __FILE__)), 'signe', 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null);
         $order++;
-        $Equipement->AddCommand((__('Date Horoscope', __FILE__)), 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order, null, null, null);
+        $Equipement->AddCommand((__('Date de l\'Horoscope', __FILE__)), 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order, null, null, null);
         $order++;
         $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order, null, null, 'core:line');
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
