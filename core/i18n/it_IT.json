@@ -13,7 +13,7 @@
         "Création Commande": "Creazione di ordini",
         "Création de la commande si besoin pour": "Se necessario, creare un comando per",
         "Date": "Data",
-        "Date Horoscope": "Data Oroscopo",
+        "Date de l\\'Horoscope": "Data dell'oroscopo",
         "Description": "Descrizione",
         "Début de l\\'actualisation manuelle": "Inizio dell'aggiornamento manuale",
         "Erreur pour ": "Errore per",
@@ -42,8 +42,7 @@
         "Type d\\'horosocope": "Tipo di oroscopo",
         "Type de générique": "Tipo di crediti",
         "Valeur Json": "Valore Json",
-        "dans la commande": "nel",
-        "signe": "segno"
+        "dans la commande": "nel"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
         "Afficher": "Mostra",
@@ -100,12 +99,12 @@
         "Scorpion": "Scorpion",
         "Signe du zodiaque": "Segno zodiacale",
         "Source de l'horsocope": "Fonte dell'oroscopo",
+        "Source de l\\'horoscope": "Fonte dell'oroscopo",
         "Supprimer": "Supprimer",
         "Taureau": "Toro",
         "Traditionnel Quotidien Condensé": "Tradizionale Quotidiano Condensato",
         "Traditionnel hebdomadaire": "Settimanale tradizionale",
         "Type": "Tipo",
-        "Type de Horoscope": "Tipo di oroscopo",
         "Valeur": "Valore",
         "Verseau": "Acquario",
         "Vierge": "Vergine",
