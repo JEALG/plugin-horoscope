@@ -40,8 +40,8 @@
         "Type d\\'horosocope": "Horosocope type",
         "Type de générique": "Generic type",
         "Valeur Json": "Json value",
-        "Valeur date": "Date value",
         "Valeur de l\\'horoscope": "Horoscope value",
+        "Valeur de la date": "Date value",
         "dans la commande": "in the order"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {

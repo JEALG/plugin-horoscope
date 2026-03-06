@@ -40,8 +40,8 @@
         "Type d\\'horosocope": "Art des Horoskope",
         "Type de générique": "Art des Vorspanns",
         "Valeur Json": "Json-Wert",
-        "Valeur date": "Wert Datum",
         "Valeur de l\\'horoscope": "Wert des Horoskops",
+        "Valeur de la date": "Wert des Datums",
         "dans la commande": "in der Bestellung"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
