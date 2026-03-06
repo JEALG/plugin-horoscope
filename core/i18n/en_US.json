@@ -13,7 +13,7 @@
         "Création Commande": "Creation Command",
         "Création de la commande si besoin pour": "Create command if required for",
         "Date": "Date",
-        "Date Horoscope": "Date Horoscope",
+        "Date de l\\'Horoscope": "Horoscope date",
         "Description": "Description",
         "Début de l\\'actualisation manuelle": "Start of manual update",
         "Erreur pour ": "Error for",
@@ -42,8 +42,7 @@
         "Type d\\'horosocope": "Horosocope type",
         "Type de générique": "Generic type",
         "Valeur Json": "Json value",
-        "dans la commande": "in the order",
-        "signe": "sign"
+        "dans la commande": "in the order"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
         "Afficher": "Display",
@@ -100,12 +99,12 @@
         "Scorpion": "Scorpio",
         "Signe du zodiaque": "Zodiac sign",
         "Source de l'horsocope": "Source of the horoscope",
+        "Source de l\\'horoscope": "Source of the horoscope",
         "Supprimer": "Delete",
         "Taureau": "Taurus",
         "Traditionnel Quotidien Condensé": "Traditional Daily Condensed",
         "Traditionnel hebdomadaire": "Traditional weekly",
         "Type": "Type",
-        "Type de Horoscope": "Horoscope type",
         "Valeur": "Value",
         "Verseau": "Aquarius",
         "Vierge": "Virgo",
