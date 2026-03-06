@@ -68,7 +68,7 @@ function horoscope_update()
         log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
     }
 
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/4 :/fg:───▶︎ ' . (__('Mise à jour des équipement', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/4 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
     //message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
