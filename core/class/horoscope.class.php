@@ -159,6 +159,7 @@ class horoscope extends eqLogic
         $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/jour.json";
         $jsonStr = file_get_contents($url);
         $data = json_decode($jsonStr, true);
+        $horoscope['signe'] = $signe_zodiaque;
         log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête', __FILE__) . ':/fg: ──');
         log::add('horoscope', 'debug', '│|:fg-info:URL : :/fg:' . $url);
         if (!is_array($data)) {
@@ -172,24 +173,21 @@ class horoscope extends eqLogic
         try {
             foreach ($data as $nomSigne => $description) {
                 if ($nomSigne == 'date') {
-                    $date = trim($description);
+                    $horoscope['date'] = trim($description);
                 }
                 if ($nomSigne === $signe_zodiaque) {
-                    $description = trim($description);
+                    $horoscope['horoscope'] = trim($description);
                 }
             }
-            //log::add('horoscope', 'debug', '││ :fg-info:' . __('Date', __FILE__) . ' ::/fg: ' . $title);
-            log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $description);
+
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $horoscope['horoscope']);
         } catch (Exception $exc) {
             log::add('horoscope', 'error', __('Erreur pour la récupération des données sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
         }
 
         log::add('horoscope', 'debug', '│└─────────');
-        $horoscope = array(
-            "date" => $date,
-            "horoscope" => $description,
-            "signe" => $signe_zodiaque
-        );
+
+
         return $horoscope;
     }
 
