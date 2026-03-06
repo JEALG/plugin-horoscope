@@ -40,8 +40,8 @@
         "Type d\\'horosocope": "Tipo di oroscopo",
         "Type de générique": "Tipo di crediti",
         "Valeur Json": "Valore Json",
-        "Valeur date": "Valore data",
         "Valeur de l\\'horoscope": "Valore dell'oroscopo",
+        "Valeur de la date": "Valore della data",
         "dans la commande": "nel"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
