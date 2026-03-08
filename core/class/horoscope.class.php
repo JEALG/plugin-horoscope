@@ -25,14 +25,6 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 class horoscope extends eqLogic
 {
 
-    protected static $_theme_mapping = [
-        //clin_d_oeil' => 'horoscopeDuJour'
-    ];
-
-    /* Le gabarit de l'URL de récupération de l'horoscope - La chaine '%s' sera remplacée par la clé du signe de l'equipement */
-
-    public static $_url_template = 'http://www.asiaflash.com/horoscope/%s.xml';
-
     /*     * *************************Attributs****************************** */
 
     /*     * ***********************Methode static*************************** */
@@ -60,53 +52,14 @@ class horoscope extends eqLogic
     //Fonction Widget
     public static $_widgetPossibility = array('custom' => true);
 
-    /* Recuperer l'horoscope du jour et met à jour les commandes */
-    public function getHoroscopeName($theme_name)
-    {
-        switch ($theme_name) {
-            case 'Amour':
-                $theme_name_cmd =  (__('Amour', __FILE__));
-                break;
-            case 'Argent':
-                $theme_name_cmd =  (__('Argent', __FILE__));
-                break;
-            case 'signe':
-                $theme_name_cmd =  (__('signe', __FILE__));
-                break;
-            case 'Santé':
-                $theme_name_cmd =  (__('Santé', __FILE__));
-                break;
-            case "Travail":
-                $theme_name_cmd =  (__('Travail', __FILE__));
-                break;
-            case "Famille":
-                $theme_name_cmd =  (__('Famille', __FILE__));
-                break;
-            case "Viesociale":
-                $theme_name_cmd =  (__('Vie Sociale', __FILE__));
-                break;
-            case "Citationdujour":
-                $theme_name_cmd =  (__('Citation du jour', __FILE__));
-                break;
-            case "Nombredechance":
-                $theme_name_cmd =  (__('Nombre de chance', __FILE__));
-                break;
-            case "Clindoeil":
-                $theme_name_cmd =  (__('Clin d oeil', __FILE__));
-                break;
-            default:
-                $theme_name_cmd = $theme_name;
-        }
-        return $theme_name_cmd;
-    }
-    public function AddCommand($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO', $Equipement = null)
+    public function AddCommand($Name, $_logicalId, $Type = 'info', $SubType = 'binary', $Template = null, $generic_type = null, $IsVisible = 1, $icon = 'default', $forceLineB = 'default',  $_order = null, $_iconname = null, $_noiconname = null, $_generic_type = 'GENERIC_INFO')
     {
         $Cmd = $this->getCmd(null, $_logicalId);
         if ($SubType === 'numeric') {
             $Template  = 'core::' . 'line';
         }
         if (!is_object($Cmd)) {
-            log::add('horoscope', 'debug', '│ ' . __('Création Commande', __FILE__) . ' : ' . $Name . ' ── ' . __('Type / SubType', __FILE__) . ' : '  . $Type . '/' . $SubType . ' ── LogicalID : ' . $_logicalId . ' ── Template Widget / Ligne : ' . $Template . '/' . $forceLineB . ' ── ' . __('Type de générique', __FILE__) . ' : ' . $generic_type . ' ── ' . __('Icône', __FILE__) . ' : ' . $icon .   ' ── ' . __('Ordre', __FILE__) . $_order);
+            log::add('horoscope', 'debug', '││' . __('Création Commande', __FILE__) . ' : ' . $Name . ' ── ' . __('Type / SubType', __FILE__) . ' : '  . $Type . '/' . $SubType . ' ── LogicalID : ' . $_logicalId . ' ── Template Widget / Ligne : ' . $Template . '/' . $forceLineB . ' ── ' . __('Type de générique', __FILE__) . ' : ' . $generic_type . ' ── ' . __('Icône', __FILE__) . ' : ' . $icon .   ' ── ' . __('Ordre', __FILE__) . $_order);
             $Cmd = new horoscopeCmd();
             $Cmd->setId(null);
             $Cmd->setLogicalId($_logicalId);
@@ -141,7 +94,6 @@ class horoscope extends eqLogic
             if ($_generic_type != null) {
                 $Cmd->setDisplay('generic_type', 'GENERIC_INFO');
             }
-
             if ($generic_type != null) {
                 $Cmd->setGeneric_type($generic_type);
             }
@@ -177,71 +129,7 @@ class horoscope extends eqLogic
         }
         return $Cmd;
     }
-    public function AddCommand_theme($horo_signe, $order, $horo_type, $Equipement)
-    {
-        $horoscope = self::getHoroscopeForSigne($horo_signe, $horo_type, $this->getName());
 
-        // met a jour toutes les commandes contenants les phrases de l'horoscope
-        foreach ($horoscope['themes'] as $horo_Name => $message) {
-            if (!is_string($message)) {
-                continue;
-            }
-            // Récupération de la traduction de la commande
-            $horo_Name_Trad = horoscope::getHoroscopeName($horo_Name);
-
-            // Vérification s'il faut créer la commande
-            $create_cmd = horoscope::getHoroscopeCreateCMD($horo_Name, $horo_type);
-
-            // Création des commandes
-            if ($create_cmd === true) {
-                //log::add('horoscope', 'debug', "│ Création Commande : {$horo_Name}");
-                // Récupération du sous type de commande pour Nombre de chance
-                if ($horo_Name == 'Nombredechance') {
-                    $SubType = 'numeric';
-                    // log::add('horoscope', 'debug', "│ Création Commande ==> TYPE  : " . $SubType);
-                } else {
-                    $SubType = 'string';
-                }
-                // Création de la commande
-                $horo_Template = 'GENERIC_INFO';
-                $Equipement->AddCommand($horo_Name_Trad, $horo_Name, 'info', $SubType, $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
-                $order++;
-            } else {
-                log::add('horoscope', 'debug', "│ " . __('Création Commande', __FILE__) . ' : ' .  "{$horo_Name}" . ' ==> ' . __('Pas de création de la commande / Mise à jour', __FILE__));
-            }
-        }
-        // Mise à jour les commandes specifique declarée dans le tableau de mapping
-
-        foreach ($horoscope['themes_simple'] as $horo_Name => $message) {
-            // si un mapping specifique est defini alors on l'applique
-            if (isset(self::$_theme_mapping[$horo_Name])) {
-                $specific_commande_name = self::$_theme_mapping[$horo_Name];
-
-                // Récupération de la traduction de la commande
-                $horo_ID = horoscope::getHoroscopeName($horo_Name);
-
-                // Vérification s'il faut créer la commande
-                $create_cmd = horoscope::getHoroscopeCreateCMD($horo_Name, $horo_type);
-
-                if ($create_cmd === true) {
-                    // log::add('horoscope', 'debug', "│ Création Commande : {$$horo_Name}");
-                    // Récupération du sous type de commande pour Nombre de chance
-                    if ($horo_Name == 'Nombredechance') {
-                        $SubType = 'numeric';
-                        //log::add('horoscope', 'debug', "│ TYPE pour cette Commande : " . $SubType);
-                    } else {
-                        $SubType = 'string';
-                    }
-                    // Création de la commande
-                    $horo_Template = 'GENERIC_INFO';
-                    $Equipement->AddCommand($horo_Name, $horo_ID, 'info', $SubType, 'default', null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
-                    $order++;
-                }
-            }
-        }
-
-        return $order;
-    }
     public static function templateWidget()
     {
         $return = array('info' => array('string' => array()));
@@ -266,68 +154,85 @@ class horoscope extends eqLogic
         return $return;
     }
 
-    public static function getHoroscopeForSigne($signe_zodiaque, $type_horsocope, $name)
+    public static function getHoroscopeForSigne_Day($signe_zodiaque, $name, $horo_type)
     {
-
-        if ($type_horsocope == 'traditionnel' || $type_horsocope == 'traditionnel_condense') {
-            $signe_zodiaque = 'rss_horojour_' . $signe_zodiaque;
-        } elseif ($type_horsocope == 'traditionnel_hebdomadaire') {
-            $signe_zodiaque = 'rss_hebdotay_complet_' . $signe_zodiaque;
+        $horoscope['signe'] = $signe_zodiaque;
+        if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
+            $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/jour.json";
+            $jsonStr = file_get_contents($url);
+            $data = json_decode($jsonStr, true);
+            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête pour l\'horoscope du jour', __FILE__) . ':/fg: ──');
+            log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
+            if (!is_array($data)) {
+                log::add('horoscope', 'debug', '││:fg-danger:' . __('Le fichier Json est vide', __FILE__) . ' ───▶︎ ' .  __('Pas de mise à jour', __FILE__) . ':/fg:');
+                return false;
+            } else {
+                log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur Json', __FILE__) . '::/fg: ' . str_replace(["\r", "\n"], "", $jsonStr));
+            }
+            try {
+                foreach ($data as $nomSigne => $description) {
+                    if ($nomSigne == 'date') {
+                        $horoscope['date'] = trim($description);
+                    }
+                    if ($nomSigne === $signe_zodiaque) {
+                        $horoscope['horoscope'] = trim($description);
+                    }
+                }
+                /*
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur de la date', __FILE__) . ' ::/fg: ' . $horoscope['date']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur de l\'horoscope', __FILE__) . ' ::/fg: ' . $horoscope['horoscope']);
+            */
+            } catch (Exception $exc) {
+                log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope du jour sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
+            }
+            log::add('horoscope', 'debug', '│└─────────');
         }
 
-        $url = sprintf(self::$_url_template, $signe_zodiaque);
-        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête', __FILE__) . ':/fg: ──');
+        if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
+            $horoscope = self::getHoroscopeForSigne_Hebdo($signe_zodiaque, $name, $horoscope);
+        }
+        return $horoscope;
+    }
+
+    public static function getHoroscopeForSigne_hebdo($signe_zodiaque, $name, $horoscope)
+    {
+        $url = "https://raw.githubusercontent.com/kayoo123/astroo-api/main/docs/hebdomadaire.json";
+        $jsonStr = file_get_contents($url);
+        $data = json_decode($jsonStr, true);
+        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête pour l\'horoscope hebdomadaire', __FILE__) . ':/fg: ──');
         log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
+        if (!is_array($data)) {
+            log::add('horoscope', 'debug', '││:fg-danger:' . __('Le fichier Json est vide', __FILE__) . ' ───▶︎ ' .  __('Pas de mise à jour', __FILE__) . ':/fg:');
+            return false;
+        } else {
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur Json', __FILE__) . '::/fg: ' . str_replace(["\r", "\n"], "", $jsonStr));
+        }
         try {
-            //log::add('horoscope', 'debug', __('Mise à jour des valeurs pour', __FILE__) . ' : ' . $eqLogic->getName());
-            //$xmlData = file_get_contents($url);
-            $xmlData = file_get_contents($url, false, stream_context_create(array('socket' => array('bindto' => '0:0'))));
-            $xml = new SimpleXMLElement($xmlData);
-
-            // contient tous le champ description
-            $description = $xml->channel->item->description;
-            $title = $xml->channel->item->title;
-            log::add('horoscope', 'debug', '││ :fg-info:' . __('Date', __FILE__) . ' ::/fg: ' . $title);
-            log::add('horoscope', 'debug', '││ :fg-info:' . __('Description', __FILE__) . ' ::/fg: ' . $description);
-
-            // extrait les paragraphes de la description
-            $paragraphes = preg_split('/<br><br>/', $description);
-
-            // la liste horoscope contient une cle par theme de l'horoscope - chaque nom de theme est repris tel quel depuis le XML - en supplement chaque nom de theme est duppliquer en remplacant tous les caracteres non alphabetique par des underscores
-            $horoscope = ['themes' => [], 'themes_simple' => []];
-
-            // filtre les paragraphes pour ne retourner que ceux contenant une phrase d'horoscope
-            foreach ($paragraphes as $key => $paragraphe) {
-                // elimine les paragraphes qui ne commence par la chaine suivante :
-                if (substr($paragraphe, 0, strlen('<b>Horoscope')) !== '<b>Horoscope') {
-                    unset($paragraphes[$key]);
-                } else {
-                    $paragraphe = strip_tags($paragraphe);
-                    $matches = [];
-                    if (preg_match('/^Horoscope\s*[^ ]+\s*-\s*(.*)\n(.*)/', $paragraphe, $matches) > 0) {
-                        if (count($matches) == 3) {
-                            $theme = $matches[1];
-                            $theme = str_replace(' ', '', $theme);
-                            $theme = str_replace('\'', '', $theme);
-                            // Elime le point en fin de phrase 
-                            //$theme2 = rtrim($theme, '.');
-                            //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $theme2);
-                            $phrase = $matches[2];
-                            // Elime le point en fin de phrase 
-                            $phrase = rtrim($phrase, '.');
-                            //log::add('horoscope', 'debug', ' ─────────> Valeur ==> ' . $phrase);
-                            // Fin Elime le point en fin de phrase 
-                            $theme_strip = strtolower(preg_replace('/[^\wéè]/', '_', $theme));
-                            $horoscope['themes'][$theme] = $phrase;
-                            $horoscope['themes_simple'][$theme_strip] = $phrase;
-                        }
+            foreach ($data as $nomSigne => $description) {
+                if ($nomSigne == 'date') {
+                    $horoscope['date_hebdo'] = trim($description);
+                }
+                if ($nomSigne === $signe_zodiaque) {
+                    if (trim($description[0]) == '') {
+                        $horoscope['1_DECAN'] = trim($description[1]);
+                        $horoscope['2_DECAN'] = trim($description[2]);
+                        $horoscope['3_DECAN'] = trim($description[3]);
+                    } else {
+                        $horoscope['1_DECAN'] = trim($description[0]);
+                        $horoscope['2_DECAN'] = trim($description[1]);
+                        $horoscope['3_DECAN'] = trim($description[2]);
                     }
                 }
             }
+            /*
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Valeur de la date', __FILE__) . ' ::/fg: ' . $horoscope['date_hebdo']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Horoscope 1er Décan', __FILE__) . ' ::/fg: ' . $horoscope['1_DECAN']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Horoscope 2nd Décan', __FILE__) . ' ::/fg: ' . $horoscope['2_DECAN']);
+            log::add('horoscope', 'debug', '││ :fg-info:' . __('Horoscope 3eme Décan', __FILE__) . ' ::/fg: ' . $horoscope['3_DECAN']);
+            */
         } catch (Exception $exc) {
-            log::add('horoscope', 'error', __('Erreur pour la récupération des données sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
+            log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope hebdomadaire sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
         }
-
         log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
@@ -363,7 +268,7 @@ class horoscope extends eqLogic
             $this->setConfiguration('autorefresh', '0 5 * * *');
         }
         if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'traditionnel');
+            $this->setConfiguration('type_horoscope', 'astro_jour');
         }
     }
 
@@ -376,28 +281,44 @@ class horoscope extends eqLogic
         $Equipement = eqlogic::byId($this->getId());
         //log::add('horoscope', 'debug', 'postSave() => ' . $_eqName);
         if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'traditionnel');
+            $this->setConfiguration('type_horoscope', 'astro_jour');
         }
 
         /*  ********************** Creéation des commandes signe *************************** */
         log::add('horoscope', 'debug', '┌── :fg-success:' . __('Création de la commande si besoin pour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
-        //$horo_ID = $this->getConfiguration('signe');
-        $horo_ID = 'signe';
-        $horo_Name = (__('signe', __FILE__));
         $horo_type = $this->getConfiguration('type_horoscope');
         $horo_signe = $this->getConfiguration('signe');
         $horo_Template = 'horoscope::Signe zodiaque';
         $order = 1;
-        $Equipement->AddCommand($horo_Name, $horo_ID, 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null, $Equipement);
+        $Equipement->AddCommand((__('Signe du zodiaque', __FILE__)), 'signe', 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null);
+        $order++;
+        if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
+            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) .  ':/fg: ──');
+            $Equipement->AddCommand((__('Date Horoscope - Jour', __FILE__)), 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order, null, null, null);
+            $order++;
+            $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order, null, null, 'core:line');
+            $order++;
+            log::add('horoscope', 'debug', '│└─────────');
+        }
+        if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
+            $order = 10;
+            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope hebdomadaire', __FILE__) .  ':/fg: ──');
+            $Equipement->AddCommand((__('Date Horoscope - Hebdomadaire', __FILE__)), 'date_hebdo', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order, null, null, null);
+            $order++;
+            $Equipement->AddCommand((__('1er Décan', __FILE__)), '1_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order, null, null, 'core:line');
+            $order++;
+            $Equipement->AddCommand((__('2nd Décan', __FILE__)), '2_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order, null, null, 'core:line');
+            $order++;
+            $Equipement->AddCommand((__('3eme Décan', __FILE__)), '3_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order, null, null, 'core:line');
+            $order++;
+            log::add('horoscope', 'debug', '│└─────────');
+        }
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
-        log::add('horoscope', 'debug', '| ───▶︎ ' . __('Type Horoscope', __FILE__) . ' : ' . $horo_type);
+
         log::add('horoscope', 'debug', '| ───▶︎ ' . __('Signe', __FILE__) . ' : '  .  $horo_signe);
-        if ($this->getConfiguration('signe') != '') {
-            horoscope::AddCommand_theme($horo_signe, $order, $horo_type, $Equipement);
-        }
         log::add('horoscope', 'debug', '└─────────');
-        if (!$this->getIsEnable()) return;
+
         $this->getInformations();
     }
 
@@ -413,16 +334,12 @@ class horoscope extends eqLogic
             throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
         }
         /*  ********************** Du type d'horoscope signe *************************** */
-        if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'traditionnel');
+        if ($this->getConfiguration('type_horoscope') == '' || $this->getConfiguration('type_horoscope') == 'traditionnel') {
+            $this->setConfiguration('type_horoscope', 'astro_jour');
         }
     }
 
-    public function postUpdate()
-    {
-        if (!$this->getIsEnable()) return;
-        $this->getInformations();
-    }
+    public function postUpdate() {}
 
     public function preRemove() {}
 
@@ -437,23 +354,6 @@ class horoscope extends eqLogic
             }
         }
         return 'plugins/horoscope/plugin_info/horoscope_icon.png';
-    }
-    public function getHoroscopeCreateCMD($theme_name, $type_horsocope)
-    {
-        switch ($type_horsocope) {
-            case 'traditionnel_condense':
-                if ($theme_name === 'Amour' || $theme_name === 'Travail') {
-                    $create_cmd = true;
-                    //log::add('horoscope', 'debug', "│ {$theme_name} : CREATION");
-                } else {
-                    $create_cmd = false;
-                    //log::add('horoscope', 'debug', "│ {$theme_name} : PAS DE CREATION");
-                }
-                break;
-            default:
-                $create_cmd = true;
-        }
-        return $create_cmd;
     }
 
     /*     * **********************Getteur Setteur*************************** */
@@ -476,38 +376,24 @@ class horoscope extends eqLogic
 
         /*  ********************** Du type d'horoscope signe *************************** */
         if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'traditionnel');
+            $this->setConfiguration('type_horoscope', 'astro_jour');
         }
-        $type_horsocope = $this->getConfiguration('type_horoscope');
+        $horo_type = $this->getConfiguration('type_horoscope');
 
-        log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Type d\'horosocope', __FILE__) . ' :/fg:: ' . $type_horsocope);
+        log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
         log::add('horoscope', 'debug', '│└─────────');
-
-        /* Création/Update Signe */
-        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Mise à jour du signe de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
-        $cmd = $this->getCmd('info', 'signe'); //Mise à jour de la valeur
-        if (is_object($cmd)) {
-            $cmd->setConfiguration('value', $signe_zodiaque);
-            $cmd->save();
-            $cmd->event($signe_zodiaque);
-        }
-        $this->checkAndUpdateCmd('signe', $signe_zodiaque);
-        log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Mise à jour Signe', __FILE__) . ' :/fg:: ' .  $signe_zodiaque);
-        log::add('horoscope', 'debug', '│└─────────');
-
-
-        $horoscope = self::getHoroscopeForSigne($signe_zodiaque, $type_horsocope, $this->getName());
-        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
-        foreach ($horoscope['themes'] as $theme_name => $message) {
-            if (!is_string($message)) {
-                continue;
+        $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
+        if ($horoscope != false) {
+            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
+            foreach ($horoscope as $name => $message) {
+                if (!is_string($message)) {
+                    continue;
+                }
+                log::add('horoscope', 'debug', "││:fg-info: ───▶︎ {$name} ::/fg: {$message}");
+                $this->checkAndUpdateCmd($name, $message);
             }
-            log::add('horoscope', 'debug', "││ ───▶︎ {$theme_name} : {$message}");
-            //if (is_object($theme_name)) {
-            $this->checkAndUpdateCmd($theme_name, $message);
-            //}
+            log::add('horoscope', 'debug', '│└─────────');
         }
-        log::add('horoscope', 'debug', '│└─────────');
         log::add('horoscope', 'debug', '└─────────');
     }
     /*     * **********************Getteur Setteur*************************** */

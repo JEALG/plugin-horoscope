@@ -38,31 +38,38 @@ function horoscope_update()
     if (is_object($cron)) {
         $cron->remove();
     }
-
     config::save('functionality::cron::enable', 1, 'horoscope');
-
-    log::add('horoscope', 'debug', '│ Etape 1/3 : Update(s) nouveautée(s)');
-
     $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
-    foreach ($eqLogics as $eqLogic) {
-        updateLogicalId($eqLogic, 'Nombredechance', null, 'numeric');
-    }
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 1/4 :/fg:───▶︎ ' . (__('Mise en place des nouveautés', __FILE__)));
+    // foreach ($eqLogics as $eqLogic) {
+    //}
 
-    log::add('horoscope', 'debug', '│ Etape 2/3 : Sauvegarde équipement');
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 2/4 :/fg:───▶︎ ' . (__('Netoyage suite changement source', __FILE__)));
+    removeLogicId('Amour');
+    removeLogicId('Argent');
+    removeLogicId('Santé');
+    removeLogicId('Travail');
+    removeLogicId('Famille');
+    removeLogicId('Viesociale');
+    removeLogicId('Nombredechance');
+    removeLogicId('Clindoeil');
+    removeLogicId('Citationdujour');
+
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/4 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
         foreach ($eqs as $eq) {
-            $eq->save();
+            $eq->save(true);
         }
     } catch (Exception $e) {
         $e = print_r($e, 1);
         log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
     }
 
-    log::add('horoscope', 'debug', '│ Etape 3/3 : Mise à jour des équipements');
-    message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/4 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
+    //message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
     }
@@ -81,7 +88,7 @@ function updateLogicalId($eqLogic, $from, $to = null, $SubType = null)
         if ($SubType != null) {
             $cmd->setSubType($SubType);
         }
-        $cmd->save();
+        $cmd->save(true);
     }
 }
 
@@ -90,5 +97,15 @@ function horoscope_remove()
     $cron = cron::byClassAndFunction('horoscope', 'pull');
     if (is_object($cron)) {
         $cron->remove();
+    }
+}
+function removeLogicId($cmdDel)
+{
+    $eqLogics = eqLogic::byType('horoscope');
+    foreach ($eqLogics as $eqLogic) {
+        $cmd = $eqLogic->getCmd(null, $cmdDel);
+        if (is_object($cmd)) {
+            $cmd->remove();
+        }
     }
 }
