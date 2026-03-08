@@ -185,8 +185,9 @@ class horoscope extends eqLogic
             } catch (Exception $exc) {
                 log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope du jour sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
             }
+            log::add('horoscope', 'debug', '│└─────────');
         }
-        log::add('horoscope', 'debug', '│└─────────');
+
         if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
             $horoscope = self::getHoroscopeForSigne_Hebdo($signe_zodiaque, $name, $horoscope);
         }
