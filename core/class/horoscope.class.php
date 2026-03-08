@@ -379,7 +379,7 @@ class horoscope extends eqLogic
         }
         $horo_type = $this->getConfiguration('type_horoscope');
 
-        log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
+        log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
         log::add('horoscope', 'debug', '│└─────────');
         $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
         if ($horoscope != false) {
