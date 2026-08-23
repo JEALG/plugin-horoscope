@@ -174,7 +174,7 @@ class horoscope extends eqLogic
             $html = file_get_contents($url, false, $context);
 
             if ($html === FALSE) {
-                log::add('horoscope', 'debug', '││:fg-danger:' . __('Erreur de chargement du site Astroo', __FILE__) . ':/fg:');
+                log::add('horoscope', 'error', '││:fg-danger:' . __('Erreur de chargement du site Astroo', __FILE__) . ':/fg:');
                 return false;
             }
 
