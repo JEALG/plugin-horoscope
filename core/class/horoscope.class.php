@@ -158,11 +158,12 @@ class horoscope extends eqLogic
     {
         $horoscope['signe'] = $signe_zodiaque;
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
-            $url = "https://www.astroo.com/horoscope.php";
+            $signe_clean = strtolower($signe_zodiaque);
+            $url = "https://www.astroo.com/horoscopes/horoscope_" . $signe_clean . ".php";
             $options = [
                 'http' => [
                     'method' => 'GET',
-                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n"
+                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
                 ]
             ];
             $context = stream_context_create($options);
@@ -179,9 +180,8 @@ class horoscope extends eqLogic
 
             try {
                 $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-                $signe_majuscule = strtoupper($signe_zodiaque);
 
-                preg_match('/' . $signe_majuscule . '<\/a>\s*<\/span>\s*(.*?)\s*<br/si', $html, $matches);
+                preg_match('/class="tegb" style="font:18px[^>]*>(.*?)<\/p>/si', $html, $matches);
 
                 $horoscope['date'] = date('Y-m-d');
 
@@ -191,7 +191,7 @@ class horoscope extends eqLogic
 
                     $horoscope['horoscope'] = trim($texte_nettoye);
 
-                    log::add('horoscope', 'debug', '││ :fg-info:' . __('Texte récupéré avec succès pour', __FILE__) . ':/fg: : ' . $signe_majuscule);
+                    log::add('horoscope', 'debug', '││ :fg-info:' . __('Texte récupéré avec succès pour', __FILE__) . ':/fg: : ' . $signe_zodiaque);
                 } else {
                     log::add('horoscope', 'error', '││ :fg-danger:' . __('Structure HTML modifiée ou signe introuvable', __FILE__) . ':/fg:');
                     $horoscope['horoscope'] = __('Données indisponibles', __FILE__);
@@ -217,7 +217,7 @@ class horoscope extends eqLogic
         $options = [
             'http' => [
                 'method' => 'GET',
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n"
+                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\\r\\n"
             ]
         ];
         $context = stream_context_create($options);
