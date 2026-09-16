@@ -14,7 +14,6 @@
         "Configuration : Signe zodiaque inexistant : ": "Konfiguration: Sternzeichen nicht vorhanden :",
         "Configuration de l\\'équipement": "Einrichten von Geräten",
         "Création Commande": "Erstellung Bestellung",
-        "Création de la commande si besoin pour": "Erstellen Sie bei Bedarf einen Auftrag für",
         "Création des commandes si besoin pour l\\'horoscope du jour": "Erstellung von Befehlen für das Tageshoroskop, falls erforderlich",
         "Création des commandes si besoin pour l\\'horoscope hebdomadaire": "Erstellung von Bestellungen für das Wochenhoroskop, falls erforderlich",
         "Date Horoscope - Hebdomadaire": "Tageshoroskop – Wöchentlich",
@@ -44,6 +43,7 @@
         "Ordre": "Befehl",
         "Pas d'action pour la commande execute": "Keine Aktion für den Befehl execute",
         "Rafraichir": "Auffrischen",
+        "Rappel du signe": "Erinnerung an das Zeichen",
         "Signe": "Zeichen",
         "Signe du zodiaque": "Sternzeichen",
         "Source et type d\\'horosocope": "Quelle und Art des Horoskops",
@@ -123,7 +123,12 @@
         "Équipement non visible": "Nicht sichtbare Ausstattung",
         "Équipement visible": "Sichtbare Ausstattung"
     },
+    "plugins\/horoscope\/plugin_info\/configuration.php": {
+        "Utiliser le http au lieu du https": "http statt https verwenden",
+        "si vous rencontrez des problèmes avec le https, cocher cette case": "Wenn Sie Probleme mit https haben, aktivieren Sie dieses Kontrollkästchen."
+    },
     "plugins\/horoscope\/plugin_info\/install.php": {
+        "Création ou mise à jour des variables nécessaire pour le plugin": "Erstellung oder Aktualisierung der für das Plugin erforderlichen Variablen",
         "Mise en place des nouveautés": "Einführung von Neuerungen",
         "Mise à jour des équipements": "Aktualisierung der Ausrüstung",
         "Netoyage suite changement source": "Reinigung nach Quellenwechsel",

@@ -14,7 +14,6 @@
         "Configuration : Signe zodiaque inexistant : ": "Configuration : No zodiac sign :",
         "Configuration de l\\'équipement": "Equipment configuration",
         "Création Commande": "Creation Command",
-        "Création de la commande si besoin pour": "Create command if required for",
         "Création des commandes si besoin pour l\\'horoscope du jour": "Creation of commands if necessary for the daily horoscope",
         "Création des commandes si besoin pour l\\'horoscope hebdomadaire": "Creation of commands if necessary for the weekly horoscope",
         "Date Horoscope - Hebdomadaire": "Date Horoscope - Weekly",
@@ -44,6 +43,7 @@
         "Ordre": "Order",
         "Pas d'action pour la commande execute": "No action for execute command",
         "Rafraichir": "Refresh",
+        "Rappel du signe": "Reminder of the symbol",
         "Signe": "Sign",
         "Signe du zodiaque": "Zodiac sign",
         "Source et type d\\'horosocope": "Source and type of horoscope",
@@ -123,7 +123,12 @@
         "Équipement non visible": "Visible equipment",
         "Équipement visible": "Visible equipment"
     },
+    "plugins\/horoscope\/plugin_info\/configuration.php": {
+        "Utiliser le http au lieu du https": "Use HTTP instead of HTTPS",
+        "si vous rencontrez des problèmes avec le https, cocher cette case": "If you're having problems with HTTPS, check this box"
+    },
     "plugins\/horoscope\/plugin_info\/install.php": {
+        "Création ou mise à jour des variables nécessaire pour le plugin": "Create or update the variables required for the plugin",
         "Mise en place des nouveautés": "Implementation of new features",
         "Mise à jour des équipements": "Equipment updates",
         "Netoyage suite changement source": "Cleaning following source change",
