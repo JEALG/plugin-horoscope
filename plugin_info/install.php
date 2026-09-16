@@ -28,6 +28,8 @@ function horoscope_install()
     }
 
     config::save('functionality::cron::enable', 1, 'horoscope');
+    config::save('horoscope_use_http',false,'horoscope');
+}
 }
 
 function horoscope_update()
@@ -41,11 +43,11 @@ function horoscope_update()
     config::save('functionality::cron::enable', 1, 'horoscope');
     $plugin = plugin::byId('horoscope');
     $eqLogics = eqLogic::byType($plugin->getId());
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 1/4 :/fg:───▶︎ ' . (__('Mise en place des nouveautés', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 1/5 :/fg:───▶︎ ' . (__('Mise en place des nouveautés', __FILE__)));
     // foreach ($eqLogics as $eqLogic) {
     //}
 
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 2/4 :/fg:───▶︎ ' . (__('Netoyage suite changement source', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 2/5 :/fg:───▶︎ ' . (__('Netoyage suite changement source', __FILE__)));
     removeLogicId('Amour');
     removeLogicId('Argent');
     removeLogicId('Santé');
@@ -56,7 +58,7 @@ function horoscope_update()
     removeLogicId('Clindoeil');
     removeLogicId('Citationdujour');
 
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/4 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/5 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
@@ -67,12 +69,20 @@ function horoscope_update()
         $e = print_r($e, 1);
         log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
     }
+    log::add('horoscope', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 4/5 : ' . (__('Création ou mise à jour des variables nécessaire pour le plugin', __FILE__)));
+	$Config_KEY = 'horoscope_use_http';
+	$Config_value = false;
+	$Config = config::byKey($Config_KEY, 'horoscope');
+	if (empty($Config)) {
+		config::save($Config_KEY, $Config_value, 'horoscope');
+	}
 
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/4 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/5 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
     //message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();
     }
+
 }
 
 function updateLogicalId($eqLogic, $from, $to = null, $SubType = null)

@@ -59,7 +59,7 @@ class horoscope extends eqLogic
             $Template  = 'core::' . 'line';
         }
         if (!is_object($Cmd)) {
-            log::add('horoscope', 'debug', '││' . __('Création Commande', __FILE__) . ' : ' . $Name . ' ── ' . __('Type / SubType', __FILE__) . ' : '  . $Type . '/' . $SubType . ' ── LogicalID : ' . $_logicalId . ' ── Template Widget / Ligne : ' . $Template . '/' . $forceLineB . ' ── ' . __('Type de générique', __FILE__) . ' : ' . $generic_type . ' ── ' . __('Icône', __FILE__) . ' : ' . $icon .   ' ── ' . __('Ordre', __FILE__) . $_order);
+            log::add('horoscope', 'debug', '│' . __('Création Commande', __FILE__) . ' : ' . $Name . ' ── ' . __('Type / SubType', __FILE__) . ' : '  . $Type . '/' . $SubType . ' ── LogicalID : ' . $_logicalId . ' ── Template Widget / Ligne : ' . $Template . '/' . $forceLineB . ' ── ' . __('Type de générique', __FILE__) . ' : ' . $generic_type . ' ── ' . __('Icône', __FILE__) . ' : ' . $icon .   ' ── ' . __('Ordre', __FILE__) . $_order);
             $Cmd = new horoscopeCmd();
             $Cmd->setId(null);
             $Cmd->setLogicalId($_logicalId);
@@ -159,7 +159,7 @@ class horoscope extends eqLogic
         $horoscope['signe'] = $signe_zodiaque;
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
             $signe_clean = strtolower($signe_zodiaque);
-            $url = "https://www.astroo.com/horoscopes/horoscope_" . $signe_clean . ".php";
+            $url = "http://www.astroo.com/horoscopes/horoscope_" . $signe_clean . ".php";
             $options = [
                 'http' => [
                     'method' => 'GET',
@@ -168,7 +168,7 @@ class horoscope extends eqLogic
             ];
             $context = stream_context_create($options);
 
-            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête directe pour l\'horoscope du jour', __FILE__) . ':/fg: ──');
+            log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Info requête directe pour l\'horoscope du jour', __FILE__) . ':/fg: ──');
             log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
 
             $html = file_get_contents($url, false, $context);
@@ -212,7 +212,7 @@ class horoscope extends eqLogic
     public static function getHoroscopeForSigne_hebdo($signe_zodiaque, $name, $horoscope)
     {
         $signe_clean = strtolower($signe_zodiaque);
-        $url = "https://www.astroo.com/horoscopes/horoscope_hebdo_" . $signe_clean . ".php";
+        $url = "http://www.astroo.com/horoscopes/horoscope_hebdo_" . $signe_clean . ".php";
 
         $options = [
             'http' => [
@@ -222,7 +222,7 @@ class horoscope extends eqLogic
         ];
         $context = stream_context_create($options);
 
-        log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ':/fg: ──');
+        log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ':/fg: ──');
         log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
 
         $html = file_get_contents($url, false, $context);
@@ -314,7 +314,7 @@ class horoscope extends eqLogic
         }
 
         /*  ********************** Creéation des commandes signe *************************** */
-        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Création de la commande si besoin pour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
+
         $horo_type = $this->getConfiguration('type_horoscope');
         $horo_signe = $this->getConfiguration('signe');
         $horo_Template = 'horoscope::Signe zodiaque';
@@ -323,23 +323,27 @@ class horoscope extends eqLogic
         $order++;
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
             $order = 10;
-            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) .  ':/fg: ──');
-            $Equipement->AddCommand((__('Date Horoscope - Jour', __FILE__)), 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
-            $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-            log::add('horoscope', 'debug', '│└─────────');
+            if (!is_object($Equipement->getCmd(null, 'Date')) || !is_object($Equipement->getCmd(null, 'horoscope'))) {
+                log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
+                $Equipement->AddCommand((__('Date Horoscope - Jour', __FILE__)), 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
+                $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+                log::add('horoscope', 'debug', '└─────────');
+            }
         }
         if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
             $order = 20;
-            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope hebdomadaire', __FILE__) .  ':/fg: ──');
-            $Equipement->AddCommand((__('Date Horoscope - Hebdomadaire', __FILE__)), 'date_hebdo', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
-            $Equipement->AddCommand((__('1er Décan', __FILE__)), '1_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-            $Equipement->AddCommand((__('2nd Décan', __FILE__)), '2_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-            $Equipement->AddCommand((__('3eme Décan', __FILE__)), '3_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-            log::add('horoscope', 'debug', '│└─────────');
+            if (!is_object($Equipement->getCmd(null, 'date_hebdo')) || !is_object($Equipement->getCmd(null, '1_DECAN')) || !is_object($Equipement->getCmd(null, '2_DECAN')) || !is_object($Equipement->getCmd(null, '3_DECAN'))) {
+                log::add('horoscope', 'debug', '┌─────────:fg-info:' . __('Création des commandes si besoin pour l\'horoscope hebdomadaire', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
+                $Equipement->AddCommand((__('Date Horoscope - Hebdomadaire', __FILE__)), 'date_hebdo', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
+                $Equipement->AddCommand((__('1er Décan', __FILE__)), '1_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+                $Equipement->AddCommand((__('2nd Décan', __FILE__)), '2_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+                $Equipement->AddCommand((__('3eme Décan', __FILE__)), '3_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+                log::add('horoscope', 'debug', '└─────────');
+            }
         }
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
-
+        log::add('horoscope', 'debug', '┌───────── :fg-success:' . __('Rappel du signe', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
         log::add('horoscope', 'debug', '| ───▶︎ ' . __('Signe', __FILE__) . ' : '  .  $horo_signe);
         log::add('horoscope', 'debug', '└─────────');
 
@@ -387,10 +391,10 @@ class horoscope extends eqLogic
     {
         if (!$this->getIsEnable()) return;
 
-        log::add('horoscope', 'debug', '┌── :fg-success:' . __('Mise à jour', __FILE__) . ' ::/fg: '  . $this->getName() . ' (' . $this->getHumanName() . ') ──');
+        log::add('horoscope', 'debug', '┌───────── :fg-success:' . __('Mise à jour', __FILE__) . ' ::/fg: '  . $this->getName() . ' (' . $this->getHumanName() . ') ──');
 
         /*  ********************** Récupération signe *************************** */
-        log::add('horoscope', 'debug', '│┌── :fg-success:' . __('Configuration de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
+        log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Configuration de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
             log::add('horoscope', 'error', '││ ───▶︎' . __('Configuration : Signe zodiaque inexistant', __FILE__) . ' : ' . $this->getConfiguration('signe_zodiaque'));
@@ -408,7 +412,7 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│└─────────');
         $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
         if ($horoscope != false) {
-            log::add('horoscope', 'debug', '│┌── :fg-info:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
+            log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
             foreach ($horoscope as $name => $message) {
                 if (!is_string($message)) {
                     continue;
