@@ -14,7 +14,6 @@
         "Configuration : Signe zodiaque inexistant : ": "Configuração : Não signo do zodíaco :",
         "Configuration de l\\'équipement": "Configuração de equipamentos",
         "Création Commande": "Criação de encomendas",
-        "Création de la commande si besoin pour": "Criar um comando, se necessário, para",
         "Création des commandes si besoin pour l\\'horoscope du jour": "Criação de comandos, se necessário, para o horóscopo do dia",
         "Création des commandes si besoin pour l\\'horoscope hebdomadaire": "Criação de comandos, se necessário, para o horóscopo semanal",
         "Date Horoscope - Hebdomadaire": "Horóscopo diário - Semanal",
@@ -44,6 +43,7 @@
         "Ordre": "Encomendar",
         "Pas d'action pour la commande execute": "Nenhuma ação para executar o comando",
         "Rafraichir": "Recarregar",
+        "Rappel du signe": "Lembrete do símbolo",
         "Signe": "Sinal",
         "Signe du zodiaque": "Signo do zodíaco",
         "Source et type d\\'horosocope": "Fonte e tipo de horóscopo",
@@ -123,7 +123,12 @@
         "Équipement non visible": "Equipamento não visível",
         "Équipement visible": "Equipamentos visíveis"
     },
+    "plugins\/horoscope\/plugin_info\/configuration.php": {
+        "Utiliser le http au lieu du https": "Utilizar o http em vez do https",
+        "si vous rencontrez des problèmes avec le https, cocher cette case": "Se tiver problemas com o https, assinale esta caixa"
+    },
     "plugins\/horoscope\/plugin_info\/install.php": {
+        "Création ou mise à jour des variables nécessaire pour le plugin": "Criação ou atualização das variáveis necessárias para o plugin",
         "Mise en place des nouveautés": "Implementação das novidades",
         "Mise à jour des équipements": "Atualização dos equipamentos",
         "Netoyage suite changement source": "Limpeza após alteração da fonte",
