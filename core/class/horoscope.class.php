@@ -160,7 +160,7 @@ class horoscope extends eqLogic
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
             $signe_clean = strtolower($signe_zodiaque);
             $variable_url = "https";
-            if (config::byKey('horoscope_use_http', 'horoscope') === true) {
+            if (config::byKey('horoscope_use_http', 'horoscope') === '1') {
                 $variable_url = "http";
             }
             $url = $variable_url . "://www.astroo.com/horoscopes/horoscope_" . $signe_clean . ".php";
@@ -217,7 +217,7 @@ class horoscope extends eqLogic
     {
         $signe_clean = strtolower($signe_zodiaque);
         $variable_url = "https";
-        if (config::byKey('horoscope_use_http', 'horoscope') === true) {
+        if (config::byKey('horoscope_use_http', 'horoscope') === '1') {
             $variable_url = "http";
         }
         $url = $variable_url . "://www.astroo.com/horoscopes/horoscope_hebdo_" . $signe_clean . ".php";
