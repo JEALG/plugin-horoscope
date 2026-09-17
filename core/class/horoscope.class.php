@@ -153,57 +153,119 @@ class horoscope extends eqLogic
         );
         return $return;
     }
+    public static function ConnexionHoroscope($para_horoscope)
+    {
+        $variable_url = "https://www.";
+        if (config::byKey('horoscope_use_http', 'horoscope') === '1') {
+            $variable_url = "http://www.";
+        }
+
+        $url = $variable_url . 'astroo.com/horoscopes/' . $para_horoscope['URL'] . '.php';
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HEADER => false,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+            CURLOPT_USERAGENT =>
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' .
+                'AppleWebKit/537.36 (KHTML, like Gecko) ' .
+                'Chrome/120.0.0.0 Safari/537.36',
+            CURLOPT_HTTPHEADER => [
+                'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Cache-Control: no-cache',
+                'Pragma: no-cache'
+            ]
+        ]);
+        if ($para_horoscope['horo_type'] == 'day') {
+            $type_log = __('Info requête directe pour l\'horoscope du jour', __FILE__);
+        } else {
+            $type_log = __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__);
+        }
+        log::add('horoscope', 'debug', '│┌───────── :fg-success:' . $type_log . ':/fg: ──');
+
+        $html = curl_exec($ch);
+        $curl_error = curl_error($ch);
+        $curl_errno = curl_errno($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        // PHP < 8.5 : fermeture explicite du handle cURL
+        if (PHP_VERSION_ID < 80500) {
+            curl_close($ch);
+        }
+        log::add('horoscope', 'debug', '││ :fg-info:' . __('URL', __FILE__) . ':/fg: : ' . $url . ' :fg-info:── ' . __('Code HTTP', __FILE__) . ':/fg: : ' . $http_code);
+        // Traitement des différentes erreurs possible 
+        // Erreur cURL
+        $error_site = false;
+        $message_erreur = '';
+        if ($html === false) {
+            $error_site = true;
+            $message_erreur = __('Erreur cURL', __FILE__) . $curl_errno . ' - ' . $curl_error;
+        }
+
+        // Redirection
+        if ($http_code >= 300 && $http_code < 400) {
+            $error_site = true;
+            $message_erreur = __('Redirection détectée - Code HTTP', __FILE__) . ' ' . $curl_errno . ' : ' . $http_code;
+        }
+
+        // Code HTTP différent de 200
+        if ($http_code != 200) {
+            $error_site = true;
+            $message_erreur = __('Erreur HTTP - Code HTTP', __FILE__) . ' ' . $curl_errno . ' : ' . $http_code;
+        }
+        if ($error_site == true) {
+            log::add('horoscope', 'error', $message_erreur);
+            log::add('horoscope', 'debug', '│└─────────');
+        } else {
+            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Connexion avec', __FILE__) . ' Astroo :/fg:');
+        }
+        $para_horoscope_return = array(
+            'error_site' => $error_site,
+            'html' => $html
+        );
+        return $para_horoscope_return;
+    }
 
     public static function getHoroscopeForSigne_Day($signe_zodiaque, $name, $horo_type)
     {
         $horoscope['signe'] = $signe_zodiaque;
+        $PARA_Connexion_horoscope = array(
+            'signe' => $signe_zodiaque,
+            'horo_type' => 'day',
+            'URL' => 'horoscope_' . strtolower($signe_zodiaque),
+        );
+
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo') {
-            $signe_clean = strtolower($signe_zodiaque);
-            $variable_url = "https";
-            if (config::byKey('horoscope_use_http', 'horoscope') === '1') {
-                $variable_url = "http";
-            }
-            $url = $variable_url . "://www.astroo.com/horoscopes/horoscope_" . $signe_clean . ".php";
-            $options = [
-                'http' => [
-                    'method' => 'GET',
-                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n"
-                ]
-            ];
-            $context = stream_context_create($options);
+            $para_horoscope_return = self::ConnexionHoroscope($PARA_Connexion_horoscope);
+            if ($para_horoscope_return['error_site'] == false) {
+                try {
+                    $html = html_entity_decode($para_horoscope_return['html'], ENT_QUOTES, 'UTF-8');
+                    preg_match('/class="tegb"\s+style="font:18px[^>]*>(.*?)<\/p>/si', $html, $matches);
+                    $horoscope['date'] = date('d-m-Y');
 
-            log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Info requête directe pour l\'horoscope du jour', __FILE__) . ':/fg: ──');
-            log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
-
-            $html = file_get_contents($url, false, $context);
-
-            if ($html === FALSE) {
-                log::add('horoscope', 'error', '││:fg-danger:' . __('Erreur de chargement du site Astroo', __FILE__) . ':/fg:');
-                return false;
-            }
-
-            try {
-                $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-
-                preg_match('/class="tegb" style="font:18px[^>]*>(.*?)<\/p>/si', $html, $matches);
-
-                $horoscope['date'] = date('Y-m-d');
-
-                if (isset($matches[1])) {
-                    $texte = trim(strip_tags($matches[1]));
-                    $texte_nettoye = preg_replace('/Cette semaine\s*\.\.\.\s*$/i', '', $texte);
-
-                    $horoscope['horoscope'] = trim($texte_nettoye);
-
-                    log::add('horoscope', 'debug', '││ :fg-info:' . __('Texte récupéré avec succès pour', __FILE__) . ':/fg: : ' . $signe_zodiaque);
-                } else {
-                    log::add('horoscope', 'error', '││ :fg-danger:' . __('Structure HTML modifiée ou signe introuvable', __FILE__) . ':/fg:');
-                    $horoscope['horoscope'] = __('Données indisponibles', __FILE__);
+                    if (isset($matches[1])) {
+                        $texte = trim(strip_tags($matches[1]));
+                        $texte_nettoye = preg_replace('/Cette semaine\s*\*?\.\.\.\s*$/i', '', $texte);
+                        $horoscope['horoscope'] = trim($texte_nettoye);
+                        log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
+                    } else {
+                        log::add('horoscope', 'error', __('Structure HTML modifiée ou signe introuvable', __FILE__) . $signe_zodiaque);
+                        $horoscope['horoscope'] = __('Données indisponibles', __FILE__);
+                    }
+                } catch (Exception $exc) {
+                    log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope du jour sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
                 }
-            } catch (Exception $exc) {
-                log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope du jour sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
+
+                log::add('horoscope', 'debug', '│└─────────');
             }
-            log::add('horoscope', 'debug', '│└─────────');
         }
 
         if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
@@ -213,64 +275,51 @@ class horoscope extends eqLogic
         return $horoscope;
     }
 
+
     public static function getHoroscopeForSigne_hebdo($signe_zodiaque, $name, $horoscope)
     {
-        $signe_clean = strtolower($signe_zodiaque);
-        $variable_url = "https";
-        if (config::byKey('horoscope_use_http', 'horoscope') === '1') {
-            $variable_url = "http";
-        }
-        $url = $variable_url . "://www.astroo.com/horoscopes/horoscope_hebdo_" . $signe_clean . ".php";
+        $horoscope['signe'] = $signe_zodiaque;
+        $PARA_Connexion_horoscope = array(
+            'signe' => $signe_zodiaque,
+            'horo_type' => 'weekly',
+            'URL' => 'horoscope_hebdo_' . strtolower($signe_zodiaque),
+        );
 
-        $options = [
-            'http' => [
-                'method' => 'GET',
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\\r\\n"
-            ]
-        ];
-        $context = stream_context_create($options);
+        $para_horoscope_return = self::ConnexionHoroscope($PARA_Connexion_horoscope);
+        if ($para_horoscope_return['error_site'] == false) {
+            try {
+                $html = html_entity_decode($para_horoscope_return['html'], ENT_QUOTES, 'UTF-8');
+                $horoscope['date_hebdo'] = date('d-m-Y');
 
-        log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ':/fg: ──');
-        log::add('horoscope', 'debug', '││ :fg-info:URL : :/fg:' . $url);
+                preg_match_all('/<td class="hhte" valign="top">(.*?)<\/td>/si', $html, $matches);
 
-        $html = file_get_contents($url, false, $context);
+                $decans = [];
+                if (isset($matches[1]) && count($matches[1]) >= 3) {
+                    for ($i = 0; $i < 3; $i++) {
+                        $texte = trim(strip_tags($matches[1][$i]));
+                        // Remplace les espaces multiples, retours à la ligne et tabulations
+                        $texte = preg_replace('/\s+/', ' ', $texte);
+                        // Supprime "Cette semaine..." à la fin du texte 
+                        $texte = preg_replace('/Cette semaine\s*\.\.\.\s*$/i', '', $texte);
+                        $decans[] = trim($texte);
+                    }
 
-        if ($html === FALSE) {
-            log::add('horoscope', 'debug', '││:fg-danger:' . __('Erreur de chargement du site Astroo (Hebdo)', __FILE__) . ':/fg:');
-            return $horoscope;
-        }
-
-        try {
-            $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-            $horoscope['date_hebdo'] = date('Y-m-d');
-
-            preg_match_all('/<td class="hhte" valign="top">(.*?)<\/td>/si', $html, $matches);
-
-            $decans = [];
-            if (isset($matches[1]) && count($matches[1]) >= 3) {
-                for ($i = 0; $i < 3; $i++) {
-                    $texte = trim(strip_tags($matches[1][$i]));
-                    $texte = preg_replace('/\s+/', ' ', $texte);
-                    $texte = preg_replace('/Cette semaine\s*\.\.\.\s*$/i', '', $texte);
-                    $decans[] = trim($texte);
+                    $horoscope['1_DECAN'] = $decans[0];
+                    $horoscope['2_DECAN'] = $decans[1];
+                    $horoscope['3_DECAN'] = $decans[2];
+                    log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
+                } else {
+                    log::add('horoscope', 'error', '││ :fg-danger:' . __('Impossible de trouver les 3 blocs de décans dans le HTML', __FILE__) . ':/fg:');
+                    $horoscope['1_DECAN'] = __('Données indisponibles', __FILE__);
+                    $horoscope['2_DECAN'] = __('Données indisponibles', __FILE__);
+                    $horoscope['3_DECAN'] = __('Données indisponibles', __FILE__);
                 }
-
-                $horoscope['1_DECAN'] = $decans[0];
-                $horoscope['2_DECAN'] = $decans[1];
-                $horoscope['3_DECAN'] = $decans[2];
-
-                log::add('horoscope', 'debug', '││ :fg-info:' . __('Décans hebdo récupérés avec succès pour', __FILE__) . ':/fg: : ' . $signe_zodiaque);
-            } else {
-                log::add('horoscope', 'error', '││ :fg-danger:' . __('Impossible de trouver les 3 blocs de décans dans le HTML', __FILE__) . ':/fg:');
-                $horoscope['1_DECAN'] = __('Données indisponibles', __FILE__);
-                $horoscope['2_DECAN'] = __('Données indisponibles', __FILE__);
-                $horoscope['3_DECAN'] = __('Données indisponibles', __FILE__);
+            } catch (Exception $exc) {
+                log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope hebdomadaire sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
             }
-        } catch (Exception $exc) {
-            log::add('horoscope', 'error', __('Erreur pour la récupération des données pour l\'horoscope hebdomadaire sur le site internet pour', __FILE__) . ' ' . $name . ' : ' . $exc->getMessage());
-        }
 
-        log::add('horoscope', 'debug', '│└─────────');
+            log::add('horoscope', 'debug', '│└─────────');
+        }
         return $horoscope;
     }
 
@@ -352,7 +401,7 @@ class horoscope extends eqLogic
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
         log::add('horoscope', 'debug', '┌───────── :fg-success:' . __('Rappel du signe', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
-        log::add('horoscope', 'debug', '| ───▶︎ ' . __('Signe', __FILE__) . ' : '  .  $horo_signe);
+        log::add('horoscope', 'debug', '| ───▶︎ :fg-info:' . __('Signe du zodiaque', __FILE__) . ' :/fg:: '  .  $horo_signe);
         log::add('horoscope', 'debug', '└─────────');
 
         $this->getInformations();
@@ -420,7 +469,7 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│└─────────');
         $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
         if ($horoscope != false) {
-            log::add('horoscope', 'debug', '│┌───────── :fg-info:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
+            log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
             foreach ($horoscope as $name => $message) {
                 if (!is_string($message)) {
                     continue;
