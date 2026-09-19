@@ -10,6 +10,7 @@
         "2nd Décan": "2. Dekade",
         "3eme Décan": "3. Dekade",
         "Amour": "Liebe",
+        "Amour (numérique)": "(Digitale) Liebe",
         "Calcul": "Berechnung",
         "Code HTTP": "HTTP-Code",
         "Configuration : Signe zodiaque inexistant": "Konfiguration: Sternzeichen nicht vorhanden",
@@ -35,10 +36,7 @@
         "Horosocope": "Horosocope",
         "Icône": "Symbol",
         "Impossible de trouver les 3 blocs de décans dans le HTML": "Die 3 Dekan-Blöcke konnten im HTML-Code nicht gefunden werden",
-        "Info : Amour": "Info: Liebe",
-        "Info : Travail": "Info: Arbeit",
         "Info : conseil": "Info: Beratung",
-        "Info : Énergie": "Info: Energie",
         "Info requête directe pour l\\'horoscope du jour": "Direkte Abfrage des Tageshoroskops",
         "Info requête directe pour l\\'horoscope hebdomadaire": "Direkte Abfrage des Wochenhoroskops",
         "Le champ \"Signe du zodiaque\" ne peut être vide": "Das Feld \"Sternzeichen\" kann nicht leer sein",
@@ -57,6 +55,7 @@
         "Structure HTML modifiée ou signe introuvable": "Geänderte HTML-Struktur oder Zeichen nicht gefunden",
         "Texte récupéré avec succès": "Text erfolgreich abgerufen",
         "Travail": "Arbeit",
+        "Travail (numérique)": "(Digitale) Arbeit",
         "Type \/ SubType": "Typ \/ SubType",
         "Type de générique": "Art des Vorspanns",
         "URL": "URLs",
@@ -65,7 +64,8 @@
         "URL du site Horoscope - Jour": "URL der Website „Horoskop – Tag“",
         "URL incomplète pour ": "Unvollständige URL für ",
         "dans la commande": "in der Bestellung",
-        "Énergie": "Energie"
+        "Énergie": "Energie",
+        "Énergie (numérique)": "Energie (digital)"
     },
     "plugins\/horoscope\/desktop\/js\/horoscope.js": {
         "Afficher": "Anzeige",
