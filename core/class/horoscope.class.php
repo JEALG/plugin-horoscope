@@ -493,51 +493,45 @@ class horoscope extends eqLogic
         $order++;
         if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo' || $horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
             $order = 10;
-            if (!is_object($Equipement->getCmd(null, 'Date')) || !is_object($Equipement->getCmd(null, 'horoscope') || !is_object($Equipement->getCmd(null, 'url')))) {
-                log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
-                if ($horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
-                    $nom_date = (__('Date Horoscope', __FILE__));
-                    $nom_URL = (__('URL du site Horoscope', __FILE__));
-                } else {
-                    $nom_date = (__('Date Horoscope - Jour', __FILE__));
-                    $nom_URL = (__('URL du site Horoscope - Jour', __FILE__));
-                }
-                $Equipement->AddCommand($nom_date, 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
-                $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $Equipement->AddCommand($nom_URL, 'url', 'info', 'string', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
-                log::add('horoscope', 'debug', '└─────────');
+            log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
+            if ($horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
+                $nom_date = (__('Date Horoscope', __FILE__));
+                $nom_URL = (__('URL du site Horoscope', __FILE__));
+            } else {
+                $nom_date = (__('Date Horoscope - Jour', __FILE__));
+                $nom_URL = (__('URL du site Horoscope - Jour', __FILE__));
             }
+            $Equipement->AddCommand($nom_date, 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
+            $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $Equipement->AddCommand($nom_URL, 'url', 'info', 'string', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+            log::add('horoscope', 'debug', '└─────────');
         }
         if (stripos($horo_type, 'sigastra') !== false) {
-            if (!is_object($Equipement->getCmd(null, 'loveLine')) || !is_object($Equipement->getCmd(null, 'love')) || !is_object($Equipement->getCmd(null, 'workLine')) || !is_object($Equipement->getCmd(null, 'work')) || !is_object($Equipement->getCmd(null, 'energyLine') || !is_object($Equipement->getCmd(null, 'energy')))) {
-                $order = 40;
-                log::add('horoscope', 'debug', '┌─────────:fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
-                $Equipement->AddCommand((__('Info : Amour', __FILE__)), 'loveLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $Equipement->AddCommand((__('Info : Travail', __FILE__)), 'workLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $Equipement->AddCommand((__('Info : Énergie', __FILE__)), 'energyLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                if ($horo_type == 'sigastra_day') {
-                    $Equipement->AddCommand((__('Amour', __FILE__)), 'love', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
-                    $Equipement->AddCommand((__('Travail', __FILE__)), 'work', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
-                    $Equipement->AddCommand((__('Énergie', __FILE__)), 'energy', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
-                } else {
-                    $Equipement->AddCommand((__('Info : conseil', __FILE__)), 'advice', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                }
-                log::add('horoscope', 'debug', '└─────────');
+            $order = 40;
+            log::add('horoscope', 'debug', '┌─────────:fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
+            $Equipement->AddCommand((__('Amour', __FILE__)), 'loveLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $Equipement->AddCommand((__('Travail', __FILE__)), 'workLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $Equipement->AddCommand((__('Énergie', __FILE__)), 'energyLine', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            if ($horo_type == 'sigastra_day') {
+                $Equipement->AddCommand((__('Amour (numérique)', __FILE__)), 'love', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+                $Equipement->AddCommand((__('Travail (numérique)', __FILE__)), 'work', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+                $Equipement->AddCommand((__('Énergie (numérique)', __FILE__)), 'energy', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+            } else {
+                $Equipement->AddCommand((__('Info : conseil', __FILE__)), 'advice', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
             }
+            log::add('horoscope', 'debug', '└─────────');
         }
 
         if ($horo_type == 'astro_hebdo' || $horo_type == 'astro_jour_hebdo') {
             $order = 20;
-            if (!is_object($Equipement->getCmd(null, 'date_hebdo')) || !is_object($Equipement->getCmd(null, '1_DECAN')) || !is_object($Equipement->getCmd(null, '2_DECAN')) || !is_object($Equipement->getCmd(null, '3_DECAN')) || !is_object($Equipement->getCmd(null, 'url_weekly'))) {
-                log::add('horoscope', 'debug', '┌─────────:fg-info:' . __('Création des commandes si besoin pour l\'horoscope hebdomadaire', __FILE__) . ' SIGASTRA : '  . $this->getName() . ':/fg: ──');
-                $Equipement->AddCommand((__('Date Horoscope - Hebdomadaire', __FILE__)), 'date_hebdo', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
-                $Equipement->AddCommand((__('1er Décan', __FILE__)), '1_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $Equipement->AddCommand((__('2nd Décan', __FILE__)), '2_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $Equipement->AddCommand((__('3eme Décan', __FILE__)), '3_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
-                $nom_URL = (__('URL du site Horoscope - Hebdomadaire', __FILE__));
-                $Equipement->AddCommand($nom_URL, 'url_weekly', 'info', 'string', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
-                log::add('horoscope', 'debug', '└─────────');
-            }
+            log::add('horoscope', 'debug', '┌─────────:fg-info:' . __('Création des commandes si besoin pour l\'horoscope hebdomadaire', __FILE__) . ' SIGASTRA : '  . $this->getName() . ':/fg: ──');
+            $Equipement->AddCommand((__('Date Horoscope - Hebdomadaire', __FILE__)), 'date_hebdo', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
+            $Equipement->AddCommand((__('1er Décan', __FILE__)), '1_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $Equipement->AddCommand((__('2nd Décan', __FILE__)), '2_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $Equipement->AddCommand((__('3eme Décan', __FILE__)), '3_DECAN', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            $nom_URL = (__('URL du site Horoscope - Hebdomadaire', __FILE__));
+            $Equipement->AddCommand($nom_URL, 'url_weekly', 'info', 'string', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+            log::add('horoscope', 'debug', '└─────────');
         }
         /*  ********************** Creéation des commandes suivant Horoscope *************************** */
         $order++;
