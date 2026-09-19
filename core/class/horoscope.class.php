@@ -307,37 +307,32 @@ class horoscope extends eqLogic
             $horoscope['love'] = (int)$result['items'][0]['data']['love'];
             $horoscope['work'] = (int)$result['items'][0]['data']['work'];
             $horoscope['energy'] = (int)$result['items'][0]['data']['energy'];
-            $horoscope['loveLine'] = $result['items'][0]['data']['loveLine'];
-            $horoscope['workLine'] = $result['items'][0]['data']['workLine'];
-            $horoscope['energyLine'] = $result['items'][0]['data']['energyLine'];
-        } else {
-            $result_speci = $result['items'][0]['editorial']['body'] ?? [];
-            foreach ($result_speci as $element) {
-                switch ($element['heading']) {
-                    case "Amour":
-                        $horoscope['loveline'] = $element['text'];
-                        break;
-                    case "Travail":
-                        $horoscope['workline'] = $element['text'];
-                        break;
-                    case "Énergie":
-                    case "wellbeing":
-                        $horoscope['energyLine'] = $element['text'];
-                        break;
-                    case "advice":
-                        $horoscope['advice'] = $element['text'];
-                        break;
-                    default:
-                        if ($element['heading'] == '') {
-                            $horoscope['horoscope'] = $element['text'];
-                        }
-                        break;
-                }
+        }
+        $result_speci = $result['items'][0]['editorial']['body'] ?? [];
+        foreach ($result_speci as $element) {
+            switch ($element['heading']) {
+                case "Amour":
+                    $horoscope['loveline'] = $element['text'];
+                    break;
+                case "Travail":
+                    $horoscope['workline'] = $element['text'];
+                    break;
+                case "Énergie":
+                case "wellbeing":
+                    $horoscope['energyLine'] = $element['text'];
+                    break;
+                case "advice":
+                    $horoscope['advice'] = $element['text'];
+                    break;
+                default:
+                    if ($element['heading'] == '') {
+                        $horoscope['horoscope'] = $element['text'];
+                    }
+                    break;
             }
         }
+
         $horoscope['url'] = $para_horoscope_return['url'];
-
-
         return $horoscope;
     }
     public static function getHoroscopeForSigne_Day($signe_zodiaque, $name, $horo_type)
@@ -517,7 +512,7 @@ class horoscope extends eqLogic
                 $Equipement->AddCommand((__('Travail (numérique)', __FILE__)), 'work', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
                 $Equipement->AddCommand((__('Énergie (numérique)', __FILE__)), 'energy', 'info', 'numeric', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
             } else {
-                $Equipement->AddCommand((__('Info : conseil', __FILE__)), 'advice', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+                $Equipement->AddCommand((__('Conseil', __FILE__)), 'advice', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
             }
             log::add('horoscope', 'debug', '└─────────');
         }
