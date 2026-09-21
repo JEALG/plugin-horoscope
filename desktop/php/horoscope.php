@@ -159,7 +159,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         <option value=''>{{Aucun}}</option>
                                         <option value='astro_jour'>astroo.com - {{Jour}}</option>
                                         <option value='astro_hebdo'>astroo.com - {{Hebdomadaire}}</option>
-                                        <option value='astro_jour_hebdo'>astroo.com - {{Jour et Hebdomadaire}}</option>-->
+                                        <option value='astro_jour_hebdo'>astroo.com - {{Jour et Hebdomadaire}}
+                                        <option value='sigastra_day'>sigastra.com - {{Jour}}</option>
+                                        <option value='sigastra_weekly'>sigastra.com - {{Hebdomadaire}}</option>
+                                        <option value='sigastra_monthly'>sigastra.com - {{Mensuel}}</option>
+                                        </option>
                                     </select>
                                 </div>
                             </div>
