@@ -303,9 +303,15 @@ class horoscope extends eqLogic
             $horoscope['date'] = date('d-m-Y', strtotime($data['date']));
             /* * horoscope */
             $horoscope['horoscope'] = $data['horoscope'];
+            if (isset($horoscope['horoscope'])) {
+                log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
+                $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
+                log::add('horoscope', 'debug', '│└─────────');
+            }
             /* * URL */
             $horoscope['url'] = $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]);
         }
+
         log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
@@ -381,7 +387,6 @@ class horoscope extends eqLogic
         }
 
         $horoscope['url'] = $para_horoscope_return['url'];
-        log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
     public static function getHoroscopeForSigne_Day($signe_zodiaque, $name, $horo_type)
@@ -544,7 +549,6 @@ class horoscope extends eqLogic
             'freehoroscopeapi_weekly',
             'freehoroscopeapi_monthly'
         ], true)) {
-            //if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo' || $horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly' || $horo_type == 'freehoroscopeapi_day' || $horo_type == 'freehoroscopeapi_weekly' || $horo_type == 'freehoroscopeapi_monthly') {
             $order = 10;
             log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
             if ($horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
@@ -557,6 +561,13 @@ class horoscope extends eqLogic
             $Equipement->AddCommand($nom_date, 'date', 'info', 'string', 'GENERIC_INFO', null, '0', 'default', 1,  $order++, null, null, null);
             $Equipement->AddCommand((__('Horoscope', __FILE__)), 'horoscope', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
             $Equipement->AddCommand($nom_URL, 'url', 'info', 'string', 'GENERIC_INFO', null, 0, 'default', 1,  $order++, null, null, 'core:line');
+            if (in_array($horo_type, [
+                'freehoroscopeapi_daily',
+                'freehoroscopeapi_weekly',
+                'freehoroscopeapi_monthly'
+            ], true)) {
+                $Equipement->AddCommand((__('Horoscope', __FILE__)) . ' FR', 'horoscope_FR', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
+            }
             log::add('horoscope', 'debug', '└─────────');
         }
         if (stripos($horo_type, 'sigastra') !== false) {
@@ -673,6 +684,77 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '└─────────');
     }
     /*     * **********************Getteur Setteur*************************** */
+}
+
+function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
+{
+    // Fonction créer avec l'aide de l'IA
+    if (trim($texte) === '') {
+        return '';
+    }
+
+    // Découpage du texte en morceaux de 450 caractères maximum
+    $morceaux = [];
+    $reste = $texte;
+
+    while ($reste !== '') {
+        if (strlen($reste) <= 450) {
+            $morceaux[] = $reste;
+            break;
+        }
+        $position = strrpos(substr($reste, 0, 450), ' ');
+        if ($position === false || $position === 0) {
+            $position = 450;
+        }
+        $morceaux[] = substr($reste, 0, $position);
+        $reste = ltrim(substr($reste, $position));
+    }
+
+    $traduction = '';
+
+    foreach ($morceaux as $index => $morceau) {
+        $url = 'https://api.mymemory.translated.net/get?' . http_build_query([
+            'q' => $morceau,
+            'langpair' => $langueSource . '|fr'
+        ]);
+
+        $contexte = stream_context_create([
+            'http' => [
+                'timeout' => 15,
+                'ignore_errors' => true,
+                'header' => "User-Agent: Jeedom Horoscope Plugin\r\n"
+            ]
+        ]);
+
+        $reponse = file_get_contents($url, false, $contexte);
+
+        if ($reponse === false) {
+            log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
+            log::add('horoscope', 'debug', '│└─────────');
+            return $texte;
+        }
+
+        $resultat = json_decode($reponse, true);
+
+        // Log de diagnostic : réponse complète de l'API
+        log::add('horoscope', 'debug', '││ OK ' . __('Réponse du traducteur', __FILE__) . ' (' . ($index + 1) . '/' . count($morceaux) . ') : ' . $reponse);
+        if (
+            !isset($resultat['responseData']['translatedText'])
+            || ($resultat['responseStatus'] ?? 0) != 200
+        ) {
+            log::add('horoscope', 'error', '││ NOK : ' . __('Traduction impossible', __FILE__));
+            log::add('horoscope', 'debug', '│└─────────');
+            return $texte;
+        }
+        $traduction .= html_entity_decode(
+            $resultat['responseData']['translatedText'],
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        ) . ' ';
+    }
+    $traduction = trim($traduction);
+    log::add('horoscope', 'debug', '││ ' . 'OK ' .  __('Traduction terminée', __FILE__));
+    return $traduction;
 }
 
 class horoscopeCmd extends cmd
