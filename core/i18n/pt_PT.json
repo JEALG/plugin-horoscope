@@ -52,6 +52,7 @@
         "Nom Information": "Informações sobre o nome",
         "Ordre": "Encomendar",
         "Pas d'action pour la commande execute": "Nenhuma ação para executar o comando",
+        "Prochaine disponibilité dans": "Disponibilidade prevista em",
         "Rafraichir": "Recarregar",
         "Rappel du signe": "Lembrete do símbolo",
         "Redirection détectée - Code HTTP": "Redirecionamento detetado - Código HTTP",
@@ -74,6 +75,7 @@
         "URL incomplète pour ": "URL incompleta para ",
         "Valeur identique, pas de traduction afin de limiter la consommation des quotas": "Valor idêntico, sem tradução para limitar o consumo das quotas",
         "dans la commande": "no",
+        "quota gratuit de traduction atteint": "limite de traduções gratuitas atingido",
         "quota gratuit de traduction atteint. Texte original conservé": "Limite de tradução gratuita atingido. Texto original mantido",
         "Énergie": "Energia",
         "Énergie (numérique)": "Energia (digital)"
