@@ -52,6 +52,7 @@
         "Nom Information": "Name Information",
         "Ordre": "Order",
         "Pas d'action pour la commande execute": "No action for execute command",
+        "Prochaine disponibilité dans": "Coming soon in",
         "Rafraichir": "Refresh",
         "Rappel du signe": "Reminder of the symbol",
         "Redirection détectée - Code HTTP": "Redirect detected - HTTP code",
@@ -74,6 +75,7 @@
         "URL incomplète pour ": "Incomplete URL for ",
         "Valeur identique, pas de traduction afin de limiter la consommation des quotas": "Same value; no translation to conserve quota usage",
         "dans la commande": "in the order",
+        "quota gratuit de traduction atteint": "Free translation quota reached",
         "quota gratuit de traduction atteint. Texte original conservé": "Free translation quota reached. Original text retained",
         "Énergie": "Energy",
         "Énergie (numérique)": "Energy (digital)"

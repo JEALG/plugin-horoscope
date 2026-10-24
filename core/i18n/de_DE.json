@@ -52,6 +52,7 @@
         "Nom Information": "Name Information",
         "Ordre": "Befehl",
         "Pas d'action pour la commande execute": "Keine Aktion für den Befehl execute",
+        "Prochaine disponibilité dans": "In Kürze erhältlich in",
         "Rafraichir": "Auffrischen",
         "Rappel du signe": "Erinnerung an das Zeichen",
         "Redirection détectée - Code HTTP": "Weiterleitung erkannt – HTTP-Code",
@@ -74,6 +75,7 @@
         "URL incomplète pour ": "Unvollständige URL für ",
         "Valeur identique, pas de traduction afin de limiter la consommation des quotas": "Identischer Wert, keine Übersetzung, um den Verbrauch der Kontingente zu begrenzen",
         "dans la commande": "in der Bestellung",
+        "quota gratuit de traduction atteint": "Kostenfreies Übersetzungskontingent ausgeschöpft",
         "quota gratuit de traduction atteint. Texte original conservé": "Kostenfreies Übersetzungskontingent ausgeschöpft. Originaltext beibehalten",
         "Énergie": "Energie",
         "Énergie (numérique)": "Energie (digital)"
