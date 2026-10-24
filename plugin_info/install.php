@@ -63,6 +63,7 @@ function horoscope_update()
     foreach ($eqLogics as $eqLogic) {
         // Changement Id pour Wifi
         if ($eqLogic->getConfiguration('type_horoscope') === 'astro_jour') {
+            log::add('Freebox_OS', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 2/4 : ' . 'TEST ------ ');
             $eqLogic->setConfiguration('type_horoscope', 'freehoroscopeapi_daily');
         }
     }
