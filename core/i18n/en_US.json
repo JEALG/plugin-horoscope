@@ -29,6 +29,7 @@
         "Données indisponibles": "Data not available",
         "Début de l\\'actualisation manuelle": "Start of manual update",
         "Erreur HTTP - Code HTTP": "HTTP Error - HTTP Code",
+        "Erreur Quota - Code HTTP": "Quota Error - HTTP Code",
         "Erreur cURL": "cURL error",
         "Erreur lors de la traduction": "Error during translation",
         "Erreur pour ": "Error for",
