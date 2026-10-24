@@ -171,7 +171,7 @@ class horoscope extends eqLogic
         /* * Construction de l'URL */
         if ($para_horoscope['site'] == 'Astroo') {
             $url = $variable_url . $para_horoscope['URL'] . '.php';
-        } else if ($para_horoscope['site'] == 'Sigastra') {
+        } else if ($para_horoscope['site'] == 'Sigastra' || $para_horoscope['site'] == 'freehoroscopeapi') {
             $url =  $para_horoscope['URL'];
         } else {
             $message_erreur = __('URL incomplète pour ', __FILE__) . $para_horoscope['site'];
@@ -260,6 +260,55 @@ class horoscope extends eqLogic
 
         );
         return $para_horoscope_return;
+    }
+    public static function getHoroscopeForSigne_freehoroscopeapi($signe_zodiaque, $Key, $horo_type)
+    {
+        $horoscope['signe'] = $signe_zodiaque;
+        /* * ───────── correspondance signe ───────── */
+        $signes = array(
+            'belier' => 'aries',
+            'taureau' => 'taurus',
+            'gemeaux' => 'gemini',
+            'cancer' => 'cancer',
+            'lion' => 'leo',
+            'vierge' => 'virgo',
+            'balance' => 'libra',
+            'scorpion' => 'scorpio',
+            'sagittaire' => 'sagittarius',
+            'capricorne' => 'capricorn',
+            'verseau' => 'aquarius',
+            'poissons' => 'pisces'
+        );
+        $signe = strtolower($signe_zodiaque);
+        $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
+        $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
+        $PARA_Connexion_horoscope = array(
+            'signe' => $signe_zodiaque,
+            'horo_type' => 'day',
+            'site' => 'freehoroscopeapi',
+            'URL' => $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe])
+        );
+
+        $para_horoscope_return = self::ConnexionHoroscope($PARA_Connexion_horoscope);
+        log::add('horoscope', 'debug', '││ [JSON] : ' . str_replace(["\r", "\n"], "", $para_horoscope_return['html']));
+        // $result = json_decode($html, true);
+        $result = json_decode($para_horoscope_return['html'], true);
+        if ($result != '') {
+            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
+        }
+
+        if (isset($result['data'])) {
+            $data = $result['data'];
+            /* * Date */
+            $horoscope['date'] = date('d-m-Y', strtotime($data['date']));
+            /* * horoscope */
+            $horoscope['horoscope'] = $data['horoscope'];
+            /* * URL */
+            $horoscope['url'] = $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]);
+        }
+
+
+        return $horoscope;
     }
     public static function getHoroscopeForSigne_sigastra($signe_zodiaque, $name, $horo_type)
     {
@@ -380,7 +429,6 @@ class horoscope extends eqLogic
         return $horoscope;
     }
 
-
     public static function getHoroscopeForSigne_hebdo($signe_zodiaque, $name, $horoscope)
     {
         $horoscope['signe'] = $signe_zodiaque;
@@ -486,7 +534,17 @@ class horoscope extends eqLogic
         $order = 1;
         $Equipement->AddCommand((__('Signe du zodiaque', __FILE__)), 'signe', 'info', 'string', $horo_Template, null, 1, 'default', 'default',  $order, null, null, null);
         $order++;
-        if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo' || $horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
+        if (in_array($horo_type, [
+            'astro_jour',
+            'astro_jour_hebdo',
+            'sigastra_day',
+            'sigastra_weekly',
+            'sigastra_monthly',
+            'freehoroscopeapi_daily',
+            'freehoroscopeapi_weekly',
+            'freehoroscopeapi_monthly'
+        ], true)) {
+            //if ($horo_type == 'astro_jour' || $horo_type == 'astro_jour_hebdo' || $horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly' || $horo_type == 'freehoroscopeapi_day' || $horo_type == 'freehoroscopeapi_weekly' || $horo_type == 'freehoroscopeapi_monthly') {
             $order = 10;
             log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
             if ($horo_type == 'sigastra_day' || $horo_type == 'sigastra_weekly' || $horo_type == 'sigastra_monthly') {
@@ -599,6 +657,8 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│└─────────');
         if (stripos($horo_type, 'astro') !== false) {
             $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
+        } else if (stripos($horo_type, 'freehoroscopeapi') !== false) {
+            $horoscope = self::getHoroscopeForSigne_freehoroscopeapi($signe_zodiaque, $this->getName(), $horo_type);
         } else if (stripos($horo_type, 'sigastra') !== false) {
             $horoscope = self::getHoroscopeForSigne_sigastra($signe_zodiaque, $this->getName(), $horo_type);
         }
