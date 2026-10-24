@@ -157,9 +157,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <div class="col-sm-6">
                                     <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_horoscope">
                                         <option value=''>{{Aucun}}</option>
-                                        <option value='astro_jour'>astroo.com - {{Jour}}</option>
-                                        <option value='astro_hebdo'>astroo.com - {{Hebdomadaire}}</option>
-                                        <option value='astro_jour_hebdo'>astroo.com - {{Jour et Hebdomadaire}}
                                         <option value='APIastroway_daily'>astroway.info - {{Jour}}</option>
                                         <option value='APIastroway_weekly'>astroway.info - {{Hebdomadaire}}</option>
                                         <option value='APIastroway_monthly'>astroway.info - {{Mensuel - En anglais et traduction en Français}}</option>

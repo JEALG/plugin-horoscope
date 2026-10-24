@@ -283,9 +283,11 @@ class horoscope extends eqLogic
         if (stripos($horo_type, 'freehoroscopeapi') !== false) {
             $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
             $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
+            $_site = 'freehoroscopeapi';
         } else {
             $_URL_SITE = 'https://api.astroway.info/v1/public/horoscope/';
             $TYPE_REQUETE = str_replace('APIastroway_', '', $horo_type);
+            $_site = 'Astroway';
         }
 
         $PARA_Connexion_horoscope = array(
@@ -526,22 +528,23 @@ class horoscope extends eqLogic
         if ($this->getConfiguration('autorefresh') == '') {
             $this->setConfiguration('autorefresh', '0 5 * * *');
         }
-        if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'astro_jour');
-        }
     }
 
     public function postInsert() {}
 
-    public function preSave() {}
+    public function preSave()
+    {
+        if ($this->getConfiguration('type_horoscope') == '') {
+            log::add('horoscope', 'error', __('Configuration : Le type d\'horoscope doit être renseigné', __FILE__) . ' : ' . $this->getName() . ' ' . $this->getConfiguration('type_calcul'));
+            throw new Exception(__((__('Le champ TYPE D\'HOROSCOPE ne peut être vide pour l\'équipement : ', __FILE__)) . $this->getName(), __FILE__));
+        }
+    }
 
     public function postSave()
     {
+
         $Equipement = eqlogic::byId($this->getId());
         //log::add('horoscope', 'debug', 'postSave() => ' . $_eqName);
-        if ($this->getConfiguration('type_horoscope') == '') {
-            $this->setConfiguration('type_horoscope', 'astro_jour');
-        }
 
         /*  ********************** Creéation des commandes signe *************************** */
 
