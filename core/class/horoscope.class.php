@@ -261,7 +261,7 @@ class horoscope extends eqLogic
         );
         return $para_horoscope_return;
     }
-    public static function getHoroscopeForSigne_MULTI_api($signe_zodiaque, $Key, $horo_type)
+    public static function getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue)
     {
         $horoscope['signe'] = $signe_zodiaque;
         /* * ───────── correspondance signe ───────── */
@@ -310,11 +310,15 @@ class horoscope extends eqLogic
             /* * horoscope */
             $horoscope['horoscope'] = $data['horoscope'];
             if (stripos($horo_type, 'freehoroscopeapi') !== false) {
-                if (isset($horoscope['horoscope'])) {
-                    log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
-                    $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
-                    log::add('horoscope', 'debug', '│└─────────');
+                log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
+                if ($Oldvalue != $horoscope['horoscope']) {
+                    if (isset($horoscope['horoscope'])) {
+                        $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
+                    }
+                } else {
+                    log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Valeur identique, pas de traduction afin de limiter la consommation des quotas', __FILE__) . ':/fg:');
                 }
+                //log::add('horoscope', 'debug', '│└─────────');
             }
             /* * URL */
             $horoscope['url'] = $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]);
@@ -672,6 +676,7 @@ class horoscope extends eqLogic
         }
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Signe du zodiaque', __FILE__) . ' :/fg:: ' . $signe_zodiaque);
 
+
         /*  ********************** Du type d'horoscope signe *************************** */
         if ($this->getConfiguration('type_horoscope') == '') {
             $this->setConfiguration('type_horoscope', 'astro_jour');
@@ -679,9 +684,18 @@ class horoscope extends eqLogic
         $horo_type = $this->getConfiguration('type_horoscope');
 
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
+        if (stripos($horo_type, 'freehoroscopeapi') !== false) {
+            $cmd = $this->getCmd(null, 'horoscope');
+            if (is_object($cmd)) {
+                $Oldvalue = $cmd->execCmd();
+                log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Ancienne valeur de la commande horoscope', __FILE__) . ' :/fg:: ' . $Oldvalue);
+            }
+        }
         log::add('horoscope', 'debug', '│└─────────');
+
+        /*  ********************** Du type d'horoscope signe *************************** */
         if (stripos($horo_type, 'freehoroscopeapi') !== false || stripos($horo_type, 'APIastroway') !== false) {
-            $horoscope = self::getHoroscopeForSigne_MULTI_api($signe_zodiaque, $this->getName(), $horo_type);
+            $horoscope = self::getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue);
         } else if (stripos($horo_type, 'sigastra') !== false) {
             $horoscope = self::getHoroscopeForSigne_sigastra(
                 $signe_zodiaque,
@@ -752,6 +766,12 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
 
         if ($reponse === false) {
             log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
+            log::add('horoscope', 'debug', '│└─────────');
+            return $texte;
+        }
+
+        if (isset($result['responseStatus']) && (int) $result['responseStatus'] === 429) {
+            log::add('horoscope', 'warning', 'MyMemory : ' . __('quota gratuit de traduction atteint. Texte original conservé', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
             return $texte;
         }

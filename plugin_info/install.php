@@ -58,21 +58,23 @@ function horoscope_update()
     removeLogicId('Citationdujour');
 
     log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/5 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
-    log::add('Freebox_OS', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 2/4 : ' . (__('Changement de nom de certains équipements', __FILE__)));
-    foreach ($eqLogics as $eqLogic) {
-        // Changement Id pour Wifi
-        if ($eqLogic->getConfiguration('type_horoscope') === 'astro_jour') {
-            log::add('Freebox_OS', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 2/4 : ' . 'TEST ------ ');
-            $eqLogic->setConfiguration('type_horoscope', 'freehoroscopeapi_daily');
-            $eqLogic->save(true);
-        }
-    }
-
 
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
         foreach ($eqs as $eq) {
+            if ($eq->getConfiguration('type_horoscope') === 'astro_jour') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Jour par', __FILE__)) . 'astroway.info - ' . (__('Jour', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_daily');
+            }
+            if ($eq->getConfiguration('type_horoscope') === 'astro_hebdo') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
+            }
+            if ($eq->getConfiguration('type_horoscope') === 'astro_jour_hebdo') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Jour et Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
+            }
             $eq->save(true);
         }
     } catch (Exception $e) {
