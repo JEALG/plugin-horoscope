@@ -306,8 +306,7 @@ class horoscope extends eqLogic
             /* * URL */
             $horoscope['url'] = $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]);
         }
-
-
+        log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
     public static function getHoroscopeForSigne_sigastra($signe_zodiaque, $name, $horo_type)
@@ -382,6 +381,7 @@ class horoscope extends eqLogic
         }
 
         $horoscope['url'] = $para_horoscope_return['url'];
+        log::add('horoscope', 'debug', '│└─────────');
         return $horoscope;
     }
     public static function getHoroscopeForSigne_Day($signe_zodiaque, $name, $horo_type)
