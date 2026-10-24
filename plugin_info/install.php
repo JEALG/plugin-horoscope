@@ -58,6 +58,16 @@ function horoscope_update()
     removeLogicId('Citationdujour');
 
     log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/5 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
+    log::add('Freebox_OS', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 2/4 : ' . (__('Changement de nom de certains équipements', __FILE__)));
+    $eqLogics = eqLogic::byType($plugin->getId());
+    foreach ($eqLogics as $eqLogic) {
+        // Changement Id pour Wifi
+        if ($eqLogic->getConfiguration('type_horoscope') === 'astro_jour') {
+            $eqLogic->setConfiguration('type_horoscope', 'freehoroscopeapi_daily');
+        }
+    }
+
+
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');

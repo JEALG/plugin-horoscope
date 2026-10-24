@@ -261,7 +261,7 @@ class horoscope extends eqLogic
         );
         return $para_horoscope_return;
     }
-    public static function getHoroscopeForSigne_freehoroscopeapi($signe_zodiaque, $Key, $horo_type)
+    public static function getHoroscopeForSigne_MULTI_api($signe_zodiaque, $Key, $horo_type)
     {
         $horoscope['signe'] = $signe_zodiaque;
         /* * ───────── correspondance signe ───────── */
@@ -280,8 +280,14 @@ class horoscope extends eqLogic
             'poissons' => 'pisces'
         );
         $signe = strtolower($signe_zodiaque);
-        $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
-        $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
+        if (stripos($horo_type, 'freehoroscopeapi') !== false) {
+            $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
+            $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
+        } else {
+            $_URL_SITE = 'https://api.astroway.info/v1/public/horoscope/';
+            $TYPE_REQUETE = str_replace('APIastroway_', '', $horo_type);
+        }
+
         $PARA_Connexion_horoscope = array(
             'signe' => $signe_zodiaque,
             'horo_type' => 'day',
@@ -303,10 +309,12 @@ class horoscope extends eqLogic
             $horoscope['date'] = date('d-m-Y', strtotime($data['date']));
             /* * horoscope */
             $horoscope['horoscope'] = $data['horoscope'];
-            if (isset($horoscope['horoscope'])) {
-                log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
-                $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
-                log::add('horoscope', 'debug', '│└─────────');
+            if (stripos($horo_type, 'freehoroscopeapi') !== false) {
+                if (isset($horoscope['horoscope'])) {
+                    log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
+                    $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
+                    log::add('horoscope', 'debug', '│└─────────');
+                }
             }
             /* * URL */
             $horoscope['url'] = $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]);
@@ -547,7 +555,10 @@ class horoscope extends eqLogic
             'sigastra_monthly',
             'freehoroscopeapi_daily',
             'freehoroscopeapi_weekly',
-            'freehoroscopeapi_monthly'
+            'freehoroscopeapi_monthly',
+            'APIastroway_daily',
+            'APIastroway_weekly',
+            'APIastroway_monthly',
         ], true)) {
             $order = 10;
             log::add('horoscope', 'debug', '┌───────── :fg-info:' . __('Création des commandes si besoin pour l\'horoscope du jour', __FILE__) . ' : '  . $this->getName() . ':/fg: ──');
@@ -564,7 +575,10 @@ class horoscope extends eqLogic
             if (in_array($horo_type, [
                 'freehoroscopeapi_daily',
                 'freehoroscopeapi_weekly',
-                'freehoroscopeapi_monthly'
+                'freehoroscopeapi_monthly',
+                'APIastroway_daily',
+                'APIastroway_weekly',
+                'APIastroway_monthly',
             ], true)) {
                 $Equipement->AddCommand((__('Horoscope', __FILE__)) . ' FR', 'horoscope_FR', 'info', 'string', 'GENERIC_INFO', null, 1, 'default', 1,  $order++, null, null, 'core:line');
             }
@@ -666,12 +680,20 @@ class horoscope extends eqLogic
 
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
         log::add('horoscope', 'debug', '│└─────────');
-        if (stripos($horo_type, 'astro') !== false) {
-            $horoscope = self::getHoroscopeForSigne_Day($signe_zodiaque, $this->getName(), $horo_type);
-        } else if (stripos($horo_type, 'freehoroscopeapi') !== false) {
-            $horoscope = self::getHoroscopeForSigne_freehoroscopeapi($signe_zodiaque, $this->getName(), $horo_type);
+        if (stripos($horo_type, 'freehoroscopeapi') !== false || stripos($horo_type, 'APIastroway') !== false) {
+            $horoscope = self::getHoroscopeForSigne_MULTI_api($signe_zodiaque, $this->getName(), $horo_type);
         } else if (stripos($horo_type, 'sigastra') !== false) {
-            $horoscope = self::getHoroscopeForSigne_sigastra($signe_zodiaque, $this->getName(), $horo_type);
+            $horoscope = self::getHoroscopeForSigne_sigastra(
+                $signe_zodiaque,
+                $this->getName(),
+                $horo_type
+            );
+        } else if (stripos($horo_type, 'astro') !== false) {
+            $horoscope = self::getHoroscopeForSigne_Day(
+                $signe_zodiaque,
+                $this->getName(),
+                $horo_type
+            );
         }
         if ($horoscope != false) {
             log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
