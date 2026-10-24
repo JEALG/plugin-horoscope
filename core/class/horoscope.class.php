@@ -237,6 +237,10 @@ class horoscope extends eqLogic
                 /* * ───────── Redirection ───────── */
                 $error_site = true;
                 $message_erreur = __('Redirection détectée - Code HTTP', __FILE__) . ' ' . $curl_errno . ' : ' . $http_code;
+            } else if ($http_code === 429) {
+                /* * ───────── Code HTTP 429 ───────── */
+                $error_site = true;
+                $message_erreur = __('Erreur Quota - Code HTTP', __FILE__) . ' : ' . $http_code;
             } else if ($http_code != 200) {
                 /* * ───────── Code HTTP différent de 200 ───────── */
                 $error_site = true;
@@ -298,6 +302,11 @@ class horoscope extends eqLogic
         );
 
         $para_horoscope_return = self::ConnexionHoroscope($PARA_Connexion_horoscope);
+        if ($para_horoscope_return['error_site'] === true) {
+            $horoscope = false;
+            return $horoscope;
+        };
+        //error_site
         log::add('horoscope', 'debug', '││ [JSON] : ' . str_replace(["\r", "\n"], "", $para_horoscope_return['html']));
         // $result = json_decode($html, true);
         $result = json_decode($para_horoscope_return['html'], true);
@@ -687,6 +696,7 @@ class horoscope extends eqLogic
         $horo_type = $this->getConfiguration('type_horoscope');
 
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
+        $Oldvalue = '';
         if (stripos($horo_type, 'freehoroscopeapi') !== false) {
             $cmd = $this->getCmd(null, 'horoscope');
             if (is_object($cmd)) {
