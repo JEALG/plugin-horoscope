@@ -63,16 +63,17 @@ function horoscope_update()
     try {
         $eqs = eqLogic::byType('horoscope');
         foreach ($eqs as $eq) {
-            if ($eq->getConfiguration('type_horoscope') === 'astro_jour') {
-                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Jour par', __FILE__)) . 'astroway.info - ' . (__('Jour', __FILE__)));
+            $type = explode('_', $eq->getConfiguration('type_horoscope'), 2)[0];
+            if ($eq->getConfiguration('type_horoscope') === 'astro_jour' || $eq->getConfiguration('type_horoscope') === 'sigastra_day') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Jour par', __FILE__)) . 'astroway.info - ' . (__('Jour', __FILE__)));
                 $eq->setConfiguration('type_horoscope', 'APIastroway_daily');
             }
             if ($eq->getConfiguration('type_horoscope') === 'astro_hebdo') {
-                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
                 $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
             }
             if ($eq->getConfiguration('type_horoscope') === 'astro_jour_hebdo') {
-                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . 'astroo.com - ' . (__('Jour et Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Jour et Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
                 $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
             }
             $eq->save(true);
