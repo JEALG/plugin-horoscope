@@ -163,9 +163,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         <option value='freehoroscopeapi_daily'>freehoroscopeapi.com - {{Jour - En anglais et traduction en Français}}</option>
                                         <option value='freehoroscopeapi_weekly'>freehoroscopeapi.com - {{Hebdomadaire - En anglais et traduction en Français}}</option>
                                         <option value='freehoroscopeapi_monthly'>freehoroscopeapi.com - {{Mensuel - En anglais et traduction en Français}}</option>
-                                        <option value='sigastra_day'>sigastra.com - {{Jour}}</option>
+                                        <!-- <option value='sigastra_day'>sigastra.com - {{Jour}}</option>
                                         <option value='sigastra_weekly'>sigastra.com - {{Hebdomadaire}}</option>
-                                        <option value='sigastra_monthly'>sigastra.com - {{Mensuel}}</option>
+                                        <option value='sigastra_monthly'>sigastra.com - {{Mensuel}}</option>-->
                                         </option>
                                     </select>
                                 </div>
