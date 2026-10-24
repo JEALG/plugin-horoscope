@@ -265,7 +265,7 @@ class horoscope extends eqLogic
         );
         return $para_horoscope_return;
     }
-    public static function getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue)
+    public static function getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue, $OldvalueFR)
     {
         $horoscope['signe'] = $signe_zodiaque;
         /* * ───────── correspondance signe ───────── */
@@ -322,7 +322,7 @@ class horoscope extends eqLogic
             $horoscope['horoscope'] = $data['horoscope'];
             if (stripos($horo_type, 'freehoroscopeapi') !== false) {
                 log::add('horoscope', 'debug', '│┌───────── :fg-success: ' . __('Traduction en Français', __FILE__) . ':/fg: ──');
-                if ($Oldvalue != $horoscope['horoscope']) {
+                if ($Oldvalue != $horoscope['horoscope'] || $OldvalueFR === $horoscope['horoscope']) {
                     if (isset($horoscope['horoscope'])) {
                         $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
                     }
@@ -697,18 +697,24 @@ class horoscope extends eqLogic
 
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Source et type d\'horosocope', __FILE__) . ' :/fg:: ' . $horo_type);
         $Oldvalue = '';
+        $OldvalueFR = '';
         if (stripos($horo_type, 'freehoroscopeapi') !== false) {
             $cmd = $this->getCmd(null, 'horoscope');
             if (is_object($cmd)) {
                 $Oldvalue = $cmd->execCmd();
-                log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Ancienne valeur de la commande horoscope', __FILE__) . ' :/fg:: ' . $Oldvalue);
+                //log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Ancienne valeur de la commande horoscope', __FILE__) . ' :/fg:: ' . $Oldvalue);
+            }
+            $cmd = $this->getCmd(null, 'horoscope_FR');
+            if (is_object($cmd)) {
+                $OldvalueFR = $cmd->execCmd();
+                //log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Ancienne valeur de la commande horoscope', __FILE__) . ' :/fg:: ' . $OldvalueFR);
             }
         }
         log::add('horoscope', 'debug', '│└─────────');
 
         /*  ********************** Du type d'horoscope signe *************************** */
         if (stripos($horo_type, 'freehoroscopeapi') !== false || stripos($horo_type, 'APIastroway') !== false) {
-            $horoscope = self::getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue);
+            $horoscope = self::getHoroscopeForSigne_MULTI_api($signe_zodiaque, $horo_type, $Oldvalue, $OldvalueFR);
         } else if (stripos($horo_type, 'sigastra') !== false) {
             $horoscope = self::getHoroscopeForSigne_sigastra(
                 $signe_zodiaque,
@@ -777,26 +783,43 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
 
         $reponse = file_get_contents($url, false, $contexte);
 
+        // Récupération du code HTTP
+        $httpCode = 0;
+
+        if (isset($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
+            $httpCode = (int) $matches[1];
+        }
+        // Vérification du quota
+        if ($httpCode === 429) {
+            $resultat = json_decode($reponse, true);
+            $message = $resultat['responseData']['translatedText'] ?? '';
+
+            if (preg_match('/NEXT AVAILABLE IN\s+(\d+)\s+HOURS?\s+(\d+)\s+MINUTES?\s+(\d+)\s+SECONDS?/i', $message, $matches)) {
+                $heures   = (int) $matches[1];
+                $minutes  = (int) $matches[2];
+                $secondes = (int) $matches[3];
+
+                $delaiSecondes = ($heures * 3600) + ($minutes * 60) + $secondes;
+
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('quota gratuit de traduction atteint', __FILE__) . '. ' . __('Prochaine disponibilité dans', __FILE__) . ' ' . $heures . ' h ' . $minutes . ' min ' . $secondes . ' s. ' . 'Texte original conservé');
+            } else {
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('quota gratuit de traduction atteint. Texte original conservé', __FILE__));
+            }
+
+            return $texte;
+        }
+
+        // Vérification complémentaire du statut indiqué dans le JSON
         if ($reponse === false) {
             log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
+
             return $texte;
         }
-
-        if (isset($result['responseStatus']) && (int) $result['responseStatus'] === 429) {
-            log::add('horoscope', 'warning', 'MyMemory : ' . __('quota gratuit de traduction atteint. Texte original conservé', __FILE__));
-            log::add('horoscope', 'debug', '│└─────────');
-            return $texte;
-        }
-
-        $resultat = json_decode($reponse, true);
 
         // Log de diagnostic : réponse complète de l'API
         log::add('horoscope', 'debug', '││ OK ' . __('Réponse du traducteur', __FILE__) . ' (' . ($index + 1) . '/' . count($morceaux) . ') : ' . $reponse);
-        if (
-            !isset($resultat['responseData']['translatedText'])
-            || ($resultat['responseStatus'] ?? 0) != 200
-        ) {
+        if (!isset($resultat['responseData']['translatedText']) || ($resultat['responseStatus'] ?? 0) != 200) {
             log::add('horoscope', 'error', '││ NOK : ' . __('Traduction impossible', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
             return $texte;
