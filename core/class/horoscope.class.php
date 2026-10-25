@@ -644,7 +644,7 @@ class horoscope extends eqLogic
         $signe_zodiaque = $this->getConfiguration('signe');
 
         if ($signe_zodiaque == '') {
-            log::add('horoscope', 'error', '│ ' . __('Configuration : Signe zodiaque inexistant : ', __FILE__) . $this->getConfiguration('signe'));
+            log::add('horoscope', 'error',  __('Configuration : Signe zodiaque inexistant : ', __FILE__) . $this->getConfiguration('signe'));
             throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
         }
         /*  ********************** Du type d'horoscope signe *************************** */
@@ -683,7 +683,7 @@ class horoscope extends eqLogic
         log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Configuration de l\'équipement', __FILE__) . ' ::/fg: '   . $this->getName() . ' ──');
         $signe_zodiaque = $this->getConfiguration('signe');
         if ($signe_zodiaque == '') {
-            log::add('horoscope', 'error', '││ ───▶︎' . __('Configuration : Signe zodiaque inexistant', __FILE__) . ' : ' . $this->getConfiguration('signe_zodiaque'));
+            log::add('horoscope', 'error',  __('Configuration : Signe zodiaque inexistant', __FILE__) . ' : ' . $this->getConfiguration('signe_zodiaque'));
             throw new Exception(__('Le champ SIGNE DU ZODIAQUE ne peut être vide', __FILE__));
         }
         log::add('horoscope', 'debug', '││ ───▶︎ :fg-info:' . __('Signe du zodiaque', __FILE__) . ' :/fg:: ' . $signe_zodiaque);
@@ -797,7 +797,7 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
 
         // Gestion d'une absence de réponse
         if ($reponse === false) {
-            log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
+            log::add('horoscope', 'warning', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
             return $texte;
         }
@@ -843,7 +843,7 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
         // Vérification de la traduction reçue
         $texteTraduit = is_array($resultat) ? ($resultat['responseData']['translatedText'] ?? null) : null;
         if (!is_string($texteTraduit) || trim($texteTraduit) === '') {
-            log::add('horoscope', 'error', '││ NOK : ' . __('Traduction impossible', __FILE__));
+            log::add('horoscope', 'warning', '││ NOK : ' . __('Traduction impossible', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
             return $texte;
         }
