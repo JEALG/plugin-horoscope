@@ -743,12 +743,13 @@ class horoscope extends eqLogic
 
 function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
 {
-    // Fonction créer avec l'aide de l'IA
+    // Fonction créée avec l'aide de l'IA
+    // Aucun texte à traduire
     if (trim($texte) === '') {
         return '';
     }
 
-    // Découpage du texte en morceaux de 450 caractères maximum
+    // Découpage en morceaux de 450 caractères maximum
     $morceaux = [];
     $reste = $texte;
 
@@ -766,6 +767,14 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
     }
 
     $traduction = '';
+    $totalMorceaux = count($morceaux);
+    $contexte = stream_context_create([
+        'http' => [
+            'timeout' => 15,
+            'ignore_errors' => true,
+            'header' => "User-Agent: Jeedom Horoscope Plugin\r\n"
+        ]
+    ]);
 
     foreach ($morceaux as $index => $morceau) {
         $url = 'https://api.mymemory.translated.net/get?' . http_build_query([
@@ -773,65 +782,76 @@ function TraduireEnFrancais(string $texte, string $langueSource = 'en'): string
             'langpair' => $langueSource . '|fr'
         ]);
 
-        $contexte = stream_context_create([
-            'http' => [
-                'timeout' => 15,
-                'ignore_errors' => true,
-                'header' => "User-Agent: Jeedom Horoscope Plugin\r\n"
-            ]
-        ]);
-
+        // Un seul appel HTTP par morceau
         $reponse = file_get_contents($url, false, $contexte);
 
         // Récupération du code HTTP
         $httpCode = 0;
-
-        if (isset($http_response_header[0]) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
-            $httpCode = (int) $matches[1];
+        if (isset($http_response_header) && is_array($http_response_header)) {
+            foreach ($http_response_header as $entete) {
+                if (preg_match('/^HTTP\/\S+\s+(\d{3})\b/i', $entete, $matches)) {
+                    $httpCode = (int) $matches[1];
+                }
+            }
         }
-        // Vérification du quota
+
+        // Gestion d'une absence de réponse
+        if ($reponse === false) {
+            log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
+            log::add('horoscope', 'debug', '│└─────────');
+            return $texte;
+        }
+        // Décodage JSON
+        $resultat = json_decode($reponse, true);
+        // Gestion explicite du quota HTTP 429
         if ($httpCode === 429) {
             $resultat = json_decode($reponse, true);
             $message = $resultat['responseData']['translatedText'] ?? '';
 
             if (preg_match('/NEXT AVAILABLE IN\s+(\d+)\s+HOURS?\s+(\d+)\s+MINUTES?\s+(\d+)\s+SECONDS?/i', $message, $matches)) {
-                $heures   = (int) $matches[1];
-                $minutes  = (int) $matches[2];
+                $heures = (int) $matches[1];
+                $minutes = (int) $matches[2];
                 $secondes = (int) $matches[3];
-
                 $delaiSecondes = ($heures * 3600) + ($minutes * 60) + $secondes;
 
-                log::add('horoscope', 'warning', '││ MyMemory : ' . __('quota gratuit de traduction atteint', __FILE__) . '. ' . __('Prochaine disponibilité dans', __FILE__) . ' ' . $heures . ' h ' . $minutes . ' min ' . $secondes . ' s. ' . 'Texte original conservé');
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('Quota gratuit atteint. Prochaine disponibilité dans', __FILE__) . ' ' . $heures . ' h ' . $minutes . ' min ' . $secondes . ' s. ' . __('Texte original conservé', __FILE__));
             } else {
-                log::add('horoscope', 'warning', '││ MyMemory : ' . __('quota gratuit de traduction atteint. Texte original conservé', __FILE__));
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('Quota gratuit de traduction atteint. Texte original conservé', __FILE__) . ' Message : ' . $message);
             }
 
             return $texte;
         }
 
-        // Vérification complémentaire du statut indiqué dans le JSON
-        if ($reponse === false) {
-            log::add('horoscope', 'error', '││ NOK : ' . __('Erreur lors de la traduction', __FILE__));
-            log::add('horoscope', 'debug', '│└─────────');
+        // Gestion du quota signalé dans le JSON
+        if (is_array($resultat) && (int) ($resultat['responseStatus'] ?? 0) === 429) {
+            $message = $resultat['responseData']['translatedText'] ?? '';
+
+            if (preg_match('/NEXT AVAILABLE IN\s+(\d+)\s+HOURS?\s+(\d+)\s+MINUTES?\s+(\d+)\s+SECONDS?/i', $message, $matches)) {
+                $heures = (int) $matches[1];
+                $minutes = (int) $matches[2];
+                $secondes = (int) $matches[3];
+                $delaiSecondes = ($heures * 3600) + ($minutes * 60) + $secondes;
+
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('Quota gratuit atteint. Prochaine disponibilité dans', __FILE__) . ' ' . $heures . ' h ' . $minutes . ' min ' . $secondes . ' s. ' . __('Texte original conservé', __FILE__));
+            } else {
+                log::add('horoscope', 'warning', '││ MyMemory : ' . __('Quota gratuit de traduction atteint. Texte original conservé', __FILE__));
+            }
 
             return $texte;
         }
 
-        // Log de diagnostic : réponse complète de l'API
-        log::add('horoscope', 'debug', '││ OK ' . __('Réponse du traducteur', __FILE__) . ' (' . ($index + 1) . '/' . count($morceaux) . ') : ' . $reponse);
-        if (!isset($resultat['responseData']['translatedText']) || ($resultat['responseStatus'] ?? 0) != 200) {
+        // Vérification de la traduction reçue
+        $texteTraduit = is_array($resultat) ? ($resultat['responseData']['translatedText'] ?? null) : null;
+        if (!is_string($texteTraduit) || trim($texteTraduit) === '') {
             log::add('horoscope', 'error', '││ NOK : ' . __('Traduction impossible', __FILE__));
             log::add('horoscope', 'debug', '│└─────────');
             return $texte;
         }
-        $traduction .= html_entity_decode(
-            $resultat['responseData']['translatedText'],
-            ENT_QUOTES | ENT_HTML5,
-            'UTF-8'
-        ) . ' ';
+        // Ajout du morceau traduit
+        $traduction .= html_entity_decode($texteTraduit, ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ';
     }
     $traduction = trim($traduction);
-    log::add('horoscope', 'debug', '││ ' . 'OK ' .  __('Traduction terminée', __FILE__));
+    log::add('horoscope', 'debug', '││ OK : ' . __('Traduction terminée', __FILE__) . ' ' . __('en', __FILE__) . ' ' . $totalMorceaux . ' ' . __('morceau(x)', __FILE__));
     return $traduction;
 }
 
