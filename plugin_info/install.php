@@ -58,17 +58,31 @@ function horoscope_update()
     removeLogicId('Citationdujour');
 
     log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 3/5 :/fg:───▶︎ ' . (__('Sauvegarde des équipements', __FILE__)));
+
     //resave eqLogics for new cmd:
     try {
         $eqs = eqLogic::byType('horoscope');
         foreach ($eqs as $eq) {
+            $type = explode('_', $eq->getConfiguration('type_horoscope'), 2)[0];
+            if ($eq->getConfiguration('type_horoscope') === 'astro_jour' || $eq->getConfiguration('type_horoscope') === 'sigastra_day') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Jour par', __FILE__)) . 'astroway.info - ' . (__('Jour', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_daily');
+            }
+            if ($eq->getConfiguration('type_horoscope') === 'astro_hebdo') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
+            }
+            if ($eq->getConfiguration('type_horoscope') === 'astro_jour_hebdo') {
+                log::add('Freebox_OS', 'debug', '│ ' . (__('Remplacement source', __FILE__)) . $type . ' - ' . (__('Jour et Hebdomadaire par', __FILE__)) . 'astroway.info - ' . (__('Hebdomadaire', __FILE__)));
+                $eq->setConfiguration('type_horoscope', 'APIastroway_weekly');
+            }
             $eq->save(true);
         }
     } catch (Exception $e) {
         $e = print_r($e, 1);
         log::add('horoscope', 'error', 'horoscope update ERROR : ' . $e);
     }
-    log::add('horoscope', 'debug', '│ ' . (__('Étape', __FILE__)) . ' 4/5 : ' . (__('Création ou mise à jour des variables nécessaire pour le plugin', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/5 :/fg:───▶︎ ' . (__('Création ou mise à jour des variables nécessaire pour le plugin', __FILE__)));
     $Config_KEY = 'horoscope_use_http';
     $Config_value = false;
     $Config = config::byKey($Config_KEY, 'horoscope');
@@ -76,7 +90,7 @@ function horoscope_update()
         config::save($Config_KEY, $Config_value, 'horoscope');
     }
 
-    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 4/5 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
+    log::add('horoscope', 'debug', '│ :fg-warning:' . (__('Étape', __FILE__)) . ' 5/5 :/fg:───▶︎ ' . (__('Mise à jour des équipements', __FILE__)));
     //message::add('Plugin Horoscope', 'Le flux RSS ne fonctionne plus, le plugin est donc non fonctionnel - désolé');
     foreach (eqLogic::byType('horoscope') as $horoscope) {
         $horoscope->getInformations();

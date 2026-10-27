@@ -86,14 +86,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
                             <div class="form-group ">
                                 <label class="col-sm-4 control-label">{{Nom de l'équipement}}</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                                     <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Objet parent}}</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                                         <option value="">{{Aucun}}</option>
                                         <?php
@@ -109,7 +109,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Catégorie}}</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <?php
                                     foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                                         echo '<label class="checkbox-inline">';
@@ -121,7 +121,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Options}}</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked />{{Activer}}</label>
                                     <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked />{{Visible}}</label>
                                 </div>
@@ -132,7 +132,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <label class="col-sm-4 control-label">{{Signe du zodiaque}}
                                     <sup><i class="fas fa-question-circle" title="{{Choisir un signe zodiaque}}"></i></sup>
                                 </label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="signe">
                                         <option value=''>{{Aucun}}</option>
                                         <option value='balance'>{{Balance}}</option>
@@ -152,18 +152,26 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">{{Source et type de l'horoscope}}
-                                    <sup><i class="fas fa-question-circle" title="{{Source de l'horsocope}}"></i></sup>
+                                    <sup><i class="fas fa-question-circle" title="{{Source de l'horoscope}}"></i></sup>
                                 </label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <select id="type_calcul" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_horoscope">
                                         <option value=''>{{Aucun}}</option>
-                                        <option value='astro_jour'>astroo.com - {{Jour}}</option>
-                                        <option value='astro_hebdo'>astroo.com - {{Hebdomadaire}}</option>
-                                        <option value='astro_jour_hebdo'>astroo.com - {{Jour et Hebdomadaire}}
-                                        <option value='sigastra_day'>sigastra.com - {{Jour}}</option>
-                                        <option value='sigastra_weekly'>sigastra.com - {{Hebdomadaire}}</option>
-                                        <option value='sigastra_monthly'>sigastra.com - {{Mensuel}}</option>
-                                        </option>
+                                        <optgroup label="astroway.info">
+                                            <option value='APIastroway_daily'>Astroway - {{Jour}}</option>
+                                            <option value='APIastroway_weekly'>Astroway - {{Hebdomadaire}}</option>
+                                            <option value='APIastroway_monthly'>Astroway - {{Mensuel}}</option>
+                                        </optgroup>
+                                        <optgroup label="freehoroscopeapi.com">
+                                            <option value='freehoroscopeapi_daily'>Freehoroscope - {{Jour - En anglais et traduction en Français}}</option>
+                                            <option value='freehoroscopeapi_weekly'>Freehoroscope - {{Hebdomadaire - En anglais et traduction en Français}}</option>
+                                            <option value='freehoroscopeapi_monthly'>Freehoroscope - {{Mensuel - En anglais et traduction en Français}}</option>
+                                        </optgroup>
+                                        <!-- <optgroup label="sigastra">
+                                            <option value='sigastra_day'>Sigastra - {{Jour}}</option>
+                                            <option value='sigastra_weekly'>Sigastra - {{Hebdomadaire}}</option>
+                                            <option value='sigastra_monthly'>Sigastra - {{Mensuel}}</option>
+                                        </optgroup> -->
                                     </select>
                                 </div>
                             </div>
@@ -171,7 +179,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <label class="col-sm-4 control-label">{{Auto-actualisation}}
                                     <sup><i class="fas fa-question-circle" title="{{Fréquence de rafraîchissement des commandes infos de l'équipement}}"></i></sup>
                                 </label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-7">
                                     <div class="input-group">
                                         <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="autorefresh" placeholder="{{Cliquer sur ? pour afficher l'assistant cron}}" />
                                         <span class="input-group-btn">
