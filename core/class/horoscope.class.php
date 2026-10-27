@@ -171,7 +171,7 @@ class horoscope extends eqLogic
         /* * Construction de l'URL */
         if ($para_horoscope['site'] == 'Astroo') {
             $url = $variable_url . $para_horoscope['URL'] . '.php';
-        } else if ($para_horoscope['site'] == 'Sigastra' || $para_horoscope['site'] == 'freehoroscopeapi') {
+        } else if ($para_horoscope['site'] == 'Sigastra' || $para_horoscope['site'] == 'Freehoroscopeapi' || $para_horoscope['site'] == 'Astroway') {
             $url =  $para_horoscope['URL'];
         } else {
             $message_erreur = __('URL incomplète pour ', __FILE__) . $para_horoscope['site'];
@@ -208,10 +208,12 @@ class horoscope extends eqLogic
                     ]
                 )
             ]);
-            if ($para_horoscope['horo_type'] == 'day' || $para_horoscope['horo_type'] == 'day_sigastra') {
+            if (stripos($para_horoscope['horo_type'], 'day') !== false) {
                 $type_log = __('Info requête directe pour l\'horoscope du jour', __FILE__) . ' ' . $para_horoscope['site'];
-            } else if ($para_horoscope['horo_type'] == 'weekly' || $para_horoscope['horo_type'] == 'weekly_sigastra') {
-                $type_log = __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ' ' . $para_horoscope['site'];;
+            } elseif (stripos($para_horoscope['horo_type'], 'weekly') !== false) {
+                $type_log = __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ' ' . $para_horoscope['site'];
+            } elseif (stripos($para_horoscope['horo_type'], 'monthly') !== false) {
+                $type_log = __('Info requête directe pour l\'horoscope mensuel', __FILE__) . ' ' . $para_horoscope['site'];
             }
             log::add('horoscope', 'debug', '│┌───────── :fg-success:' . $type_log . ':/fg: ──');
 
@@ -287,17 +289,24 @@ class horoscope extends eqLogic
         if (stripos($horo_type, 'freehoroscopeapi') !== false) {
             $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
             $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
-            $_site = 'freehoroscopeapi';
+            $_site = 'Freehoroscopeapi';
         } else {
             $_URL_SITE = 'https://api.astroway.info/v1/public/horoscope/';
             $TYPE_REQUETE = str_replace('APIastroway_', '', $horo_type);
             $_site = 'Astroway';
         }
+        if (stripos($horo_type, 'day') !== false) {
+            $type_horo = 'day';
+        } else if (stripos($horo_type, 'weekly') !== false) {
+            $type_horo = 'weekly';
+        } elseif (stripos($horo_type, 'monthly') !== false) {
+            $type_horo = 'monthly';
+        }
 
         $PARA_Connexion_horoscope = array(
             'signe' => $signe_zodiaque,
-            'horo_type' => 'day',
-            'site' => 'freehoroscopeapi',
+            'horo_type' => $type_horo,
+            'site' => $_site,
             'URL' => $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe])
         );
 
@@ -729,7 +738,7 @@ class horoscope extends eqLogic
             );
         }
         if ($horoscope != false) {
-            log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Mise à jour de l\'équipement pour l\'horoscope du jour', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
+            log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Mise à jour de l\'équipement', __FILE__) . ' ::/fg: ' . $this->getName() . ' ──');
             foreach ($horoscope as $name => $message) {
                 log::add('horoscope', 'debug', "││:fg-info: ───▶︎ {$name} ::/fg: {$message}");
                 $this->checkAndUpdateCmd($name, $message);

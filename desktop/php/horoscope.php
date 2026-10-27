@@ -165,7 +165,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         <optgroup label="freehoroscopeapi.com">
                                             <option value='freehoroscopeapi_daily'>Freehoroscope - {{Jour - En anglais et traduction en Français}}</option>
                                             <option value='freehoroscopeapi_weekly'>Freehoroscope - {{Hebdomadaire - En anglais et traduction en Français}}</option>
-                                            <option value='freehoroscopeapi_monthly'>Freehoroscope -{{Mensuel - En anglais et traduction en Français}}</option>
+                                            <option value='freehoroscopeapi_monthly'>Freehoroscope - {{Mensuel - En anglais et traduction en Français}}</option>
                                         </optgroup>
                                         <!-- <optgroup label="sigastra">
                                             <option value='sigastra_day'>Sigastra - {{Jour}}</option>
