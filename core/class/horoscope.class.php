@@ -208,14 +208,7 @@ class horoscope extends eqLogic
                     ]
                 )
             ]);
-            if (stripos($para_horoscope['horo_type'], 'day') !== false) {
-                $type_log = __('Info requête directe pour l\'horoscope du jour', __FILE__) . ' ' . $para_horoscope['site'];
-            } elseif (stripos($para_horoscope['horo_type'], 'weekly') !== false) {
-                $type_log = __('Info requête directe pour l\'horoscope hebdomadaire', __FILE__) . ' ' . $para_horoscope['site'];
-            } elseif (stripos($para_horoscope['horo_type'], 'monthly') !== false) {
-                $type_log = __('Info requête directe pour l\'horoscope mensuel', __FILE__) . ' ' . $para_horoscope['site'];
-            }
-            log::add('horoscope', 'debug', '│┌───────── :fg-success:' . $type_log . ':/fg: ──');
+            log::add('horoscope', 'debug', '│┌───────── :fg-success:' . __('Info requête directe pour l\'horoscope', __FILE__) . ' :/fg:: ' . $para_horoscope['site'] . ' ──');
 
             /* * ───────── Exécution ───────── */
             $html = curl_exec($ch);
@@ -255,7 +248,7 @@ class horoscope extends eqLogic
             log::add('horoscope', 'error', $message_erreur);
             log::add('horoscope', 'debug', '│└─────────');
         } else {
-            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Connexion avec', __FILE__) . ' ' . $para_horoscope['site'] . ':/fg:');
+            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info: ' . __('Connexion avec', __FILE__) . ' :/fg:: ' . $para_horoscope['site']);
         }
         /* * ───────── Retour ───────── */
         $para_horoscope_return = array(
@@ -290,24 +283,18 @@ class horoscope extends eqLogic
             $_URL_SITE = 'https://freehoroscopeapi.com/api/v1/get-horoscope/';
             $TYPE_REQUETE = str_replace('freehoroscopeapi_', '', $horo_type);
             $_site = 'Freehoroscopeapi';
+            $_lang = '';
         } else {
             $_URL_SITE = 'https://api.astroway.info/v1/public/horoscope/';
             $TYPE_REQUETE = str_replace('APIastroway_', '', $horo_type);
             $_site = 'Astroway';
-        }
-        if (stripos($horo_type, 'day') !== false) {
-            $type_horo = 'day';
-        } else if (stripos($horo_type, 'weekly') !== false) {
-            $type_horo = 'weekly';
-        } elseif (stripos($horo_type, 'monthly') !== false) {
-            $type_horo = 'monthly';
+            $_lang = '&lang=fr';
         }
 
         $PARA_Connexion_horoscope = array(
             'signe' => $signe_zodiaque,
-            'horo_type' => $type_horo,
             'site' => $_site,
-            'URL' => $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe])
+            'URL' => $_URL_SITE . $TYPE_REQUETE . '?sign=' . urlencode($signes[$signe]) . $_lang
         );
 
         $para_horoscope_return = self::ConnexionHoroscope($PARA_Connexion_horoscope);
@@ -320,7 +307,7 @@ class horoscope extends eqLogic
         // $result = json_decode($html, true);
         $result = json_decode($para_horoscope_return['html'], true);
         if ($result != '') {
-            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
+            log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info: ' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
         }
 
         if (isset($result['data'])) {
@@ -336,7 +323,7 @@ class horoscope extends eqLogic
                         $horoscope['horoscope_FR'] = TraduireEnFrancais($horoscope['horoscope']);
                     }
                 } else {
-                    log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Valeur identique, pas de traduction afin de limiter la consommation des quotas', __FILE__) . ':/fg:');
+                    log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info: ' . __('Valeur identique, pas de traduction afin de limiter la consommation des quotas', __FILE__) . ':/fg:');
                 }
                 //log::add('horoscope', 'debug', '│└─────────');
             }
@@ -446,7 +433,7 @@ class horoscope extends eqLogic
                         $texte = trim(strip_tags($matches[1]));
                         $texte_nettoye = preg_replace('/Cette semaine\s*\*?\.\.\.\s*$/i', '', $texte);
                         $horoscope['horoscope'] = trim($texte_nettoye);
-                        log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info:' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
+                        log::add('horoscope', 'debug', '││ ' . 'OK ' . ':fg-info: ' . __('Texte récupéré avec succès', __FILE__) . ':/fg:');
                     } else {
                         log::add('horoscope', 'error', __('Structure HTML modifiée ou signe introuvable', __FILE__) . ' ' . $signe_zodiaque);
                         $horoscope['horoscope'] = __('Données indisponibles', __FILE__);
