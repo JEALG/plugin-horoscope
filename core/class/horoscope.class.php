@@ -537,13 +537,7 @@ class horoscope extends eqLogic
 
     public function postInsert() {}
 
-    public function preSave()
-    {
-        if ($this->getConfiguration('type_horoscope') == '') {
-            log::add('horoscope', 'error', __('Configuration : Le type d\'horoscope doit être renseigné', __FILE__) . ' : ' . $this->getName() . ' ' . $this->getConfiguration('type_calcul'));
-            throw new Exception(__((__('Le champ TYPE D\'HOROSCOPE ne peut être vide pour l\'équipement : ', __FILE__)) . $this->getName(), __FILE__));
-        }
-    }
+    public function preSave() {}
 
     public function postSave()
     {
@@ -640,12 +634,15 @@ class horoscope extends eqLogic
         $signe_zodiaque = $this->getConfiguration('signe');
 
         if ($signe_zodiaque == '') {
-            log::add('horoscope', 'error',  __('Configuration : Signe zodiaque inexistant : ', __FILE__) . $this->getConfiguration('signe'));
-            throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide', __FILE__));
+            log::add('horoscope', 'error',  __('Configuration : Le signe zodiaque doit être renseigné pour l\'équipenent', __FILE__) . ' : ' . $this->getName());
+            throw new Exception(__('Le champ "Signe du zodiaque" ne peut être vide pour l\'équipement', __FILE__) . ' ' . $this->getName());
         }
-        /*  ********************** Du type d'horoscope signe *************************** */
-        if ($this->getConfiguration('type_horoscope') == '' || $this->getConfiguration('type_horoscope') == 'traditionnel') {
-            $this->setConfiguration('type_horoscope', 'astro_jour');
+        /*  ********************** Récupération du type d'horoscope signe *************************** */
+        $type_horoscope = $this->getConfiguration('type_horoscope');
+
+        if ($type_horoscope == '') {
+            log::add('horoscope', 'error',  __('Configuration : Le type d\'horoscope doit être renseigné pour l\'équipenent', __FILE__) . ' : ' . $this->getName());
+            throw new Exception(__('Le champ "type d\'horoscope" ne peut être vide pour l\'équipement', __FILE__) . ' ' . $this->getName());
         }
     }
 
